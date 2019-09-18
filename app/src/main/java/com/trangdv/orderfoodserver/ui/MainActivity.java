@@ -397,6 +397,8 @@ public class MainActivity extends AppCompatActivity
         /*fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new OrderStatusFragment())
                 .commit();*/
+        Intent intent = new Intent(MainActivity.this, OrderStatus.class);
+        startActivity(intent);
     }
 
 

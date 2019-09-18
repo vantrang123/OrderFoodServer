@@ -1,9 +1,11 @@
 package com.trangdv.orderfoodserver.common;
 
+import com.trangdv.orderfoodserver.model.Request;
 import com.trangdv.orderfoodserver.model.User;
 
 public class Common {
     public static User currentUser;
+    public static Request currentRequest;
     public static final String DELETE = "Delete";
     public static final String UPDATE="Update";
 
