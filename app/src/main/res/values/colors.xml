@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorTabText">#77A7FF</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorGrey">#f5f5f5</color>
+    <color name="colorPrimary">#FF7547</color>
+    <color name="colorPrimaryDark">#E63d00</color>
+    <color name="colorAccent">#FF8F66</color>
+    <color name="colorOrange">#FF8F66</color>
+    <color name="colorWhiteSmoke">#F5F5F5</color>
+    <color name="colorDarkGray">#cccccc</color>
+    <color name="btncontinu">#FF8F66</color>
+</resources>

@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "57730312644",
+    "firebase_url": "https://order-food-6f64e.firebaseio.com",
+    "project_id": "order-food-6f64e",
+    "storage_bucket": "order-food-6f64e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57730312644:android:2671af96a93c668a2e1c91",
+        "android_client_info": {
+          "package_name": "com.trangdv.orderfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57730312644-utgm491jf7n4ejt0hecja32s3eog8d9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trangdv.orderfood",
+            "certificate_hash": "68aceea2a283c3bec6e5b6a44f6cdd11bc56736c"
+          }
+        },
+        {
+          "client_id": "57730312644-42ih3lf3lot35d6oe3v7h6l2djrvn7us.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbOZJ_CbitLuQ7_yslJtIRpEAtYg4kjKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57730312644-42ih3lf3lot35d6oe3v7h6l2djrvn7us.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57730312644:android:27a2c8d61e4c45c82e1c91",
+        "android_client_info": {
+          "package_name": "com.trangdv.orderfoodserver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57730312644-rl2e0p7kicmvuojk8larhj9ad47g6eor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trangdv.orderfoodserver",
+            "certificate_hash": "2cddbe26cd597df7bac1d6a2a2a13d66266d1812"
+          }
+        },
+        {
+          "client_id": "57730312644-42ih3lf3lot35d6oe3v7h6l2djrvn7us.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbOZJ_CbitLuQ7_yslJtIRpEAtYg4kjKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57730312644-42ih3lf3lot35d6oe3v7h6l2djrvn7us.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

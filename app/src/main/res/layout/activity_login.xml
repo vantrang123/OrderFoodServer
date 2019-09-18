@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    tools:context=".ui.LoginActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/area_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/container"
+        app:layout_constraintLeft_toLeftOf="@id/container"
+        app:layout_constraintRight_toRightOf="@id/container"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        android:paddingLeft="@dimen/dimens_16"
+        android:background="@drawable/bg_login_top">
+
+        <TextView
+            android:id="@+id/textWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/area_top"
+            app:layout_constraintLeft_toLeftOf="@id/container"
+            android:text="Welcome"
+            android:textSize="28sp"
+            android:layout_marginTop="@dimen/dimens_16"
+            android:textColor="@color/colorAccent"/>
+        <TextView
+            android:id="@+id/sologan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textWelcome"
+            app:layout_constraintBottom_toTopOf="@+id/area_interactive"
+            app:layout_constraintLeft_toLeftOf="@id/container"
+            android:textColor="@color/colorAccent"
+            android:text="@string/sologan"
+            tools:ignore="MissingConstraints,NotSibling" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/area_interactive"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/sologan"
+        app:layout_constraintBottom_toBottomOf="@id/container"
+        app:layout_constraintLeft_toLeftOf="@+id/container"
+        app:layout_constraintRight_toRightOf="@+id/container"
+        android:layout_marginBottom="140dp"
+        android:layout_marginLeft="@dimen/dimens_16"
+        android:layout_marginRight="@dimen/dimens_16"
+        android:layout_marginTop="@dimen/dimens_30"
+        android:background="@drawable/bg_login_interactive"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/textLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dimens_20sp"
+            app:layout_constraintTop_toTopOf="@id/area_interactive"
+            app:layout_constraintLeft_toLeftOf="@id/area_interactive"
+            app:layout_constraintRight_toRightOf="@id/area_interactive"
+            android:layout_marginTop="@dimen/dimens_16"
+            android:text="@string/text_login"/>
+
+        <EditText
+            android:id="@+id/phonenumber_edt_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textLogin"
+            android:layout_marginTop="@dimen/dimens_30"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColorHint="@color/colorDarkGray"
+            android:textCursorDrawable="@null"
+            android:focusable="true"
+            android:hint="Phone Number"
+            android:padding="@dimen/dimens_10"
+            android:inputType="phone"
+            android:textSize="14dp"
+            android:background="@drawable/bg_editext"
+            android:maxLines="1"/>
+
+        <EditText
+            android:id="@+id/password_edt_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/phonenumber_edt_login"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColorHint="@color/colorDarkGray"
+            android:textCursorDrawable="@null"
+            android:hint="Password"
+            android:textSize="14dp"
+            android:inputType="textPassword"
+            android:padding="@dimen/dimens_10"
+            android:background="@drawable/bg_editext"
+            android:maxLines="1"/>
+
+        <LinearLayout
+            android:id="@+id/ln_dispatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/area_interactive"
+            app:layout_constraintLeft_toLeftOf="@id/area_interactive"
+            app:layout_constraintRight_toRightOf="@id/area_interactive">
+            <TextView
+                android:id="@+id/question_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_question"
+                android:layout_marginBottom="@dimen/dimens_30"/>
+            <TextView
+                android:id="@+id/dispatch_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_30"
+                android:layout_marginLeft="4dp"
+                android:background="@drawable/bg_underline_tv"
+                android:text="@string/text_dispatch_signup"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_next"
+        app:fabCustomSize="@dimen/dimens_45"
+        app:maxImageSize="38dp"
+        app:layout_constraintTop_toBottomOf="@+id/area_interactive"
+        app:layout_constraintBottom_toBottomOf="@id/area_interactive"
+        app:layout_constraintLeft_toLeftOf="@id/area_interactive"
+        app:layout_constraintRight_toRightOf="@id/area_interactive"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">OrderFoodServer</string>
+    <string name="sologan">Đừng bỏ bữa, bạn nhé!</string>
+    <string name="text_login">Login</string>
+    <string name="text_signup">Signup</string>
+    <string name="text_question">Bạn chưa có tài khoản?</string>
+    <string name="text_dispatch_signup">Đăng kí ngay!</string>
+
+    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_search">Search</string>
+
+    <string name="menu_home">Menu</string>
+    <string name="menu_cart">Cart</string>
+    <string name="menu_exit">Signout</string>
+    <string name="menu_status">Order</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="added_to_cart">Added to Cart</string>
+</resources>
