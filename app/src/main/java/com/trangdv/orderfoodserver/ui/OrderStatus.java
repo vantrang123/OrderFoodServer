@@ -24,6 +24,7 @@ import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.listener.ItemClickListener;
 import com.trangdv.orderfoodserver.model.Request;
+import com.trangdv.orderfoodserver.remote.APIService;
 import com.trangdv.orderfoodserver.viewholder.OrderViewHolder;
 
 public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback {
@@ -34,6 +35,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
     FirebaseDatabase database;
     DatabaseReference request;
     MaterialSpinner spinner;
+    APIService mService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
         database = FirebaseDatabase.getInstance();
         request = database.getReference("Requests");
+
+        mService = Common.getFCMClient();
+
         initView();
         loadOrders();
     }
