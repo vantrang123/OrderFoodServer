@@ -9,6 +9,8 @@ import com.trangdv.orderfoodserver.model.Request;
 import com.trangdv.orderfoodserver.model.User;
 //import com.trangdv.orderfoodserver.remote.APIService;
 //import com.trangdv.orderfoodserver.remote.FCMRetrofitClient;
+import com.trangdv.orderfoodserver.remote.APIService;
+import com.trangdv.orderfoodserver.remote.FCMRetrofitClient;
 import com.trangdv.orderfoodserver.remote.IGeoCoordinates;
 import com.trangdv.orderfoodserver.remote.RetrofitClient;
 
@@ -17,6 +19,8 @@ public class Common {
     public static Request currentRequest;
     public static final String DELETE = "Delete";
     public static final String UPDATE="Update";
+    public static final String SHIPPER_TABLE ="Shippers" ;
+    public static final String ORDER_NEED_SHIP_TABLE = "OrdersNeedShip";
 
     public static final int PIC_IMAGE_REQUEST = 71;
 
@@ -32,9 +36,9 @@ public class Common {
         else return "Shipped";
     }
 
-/*    public static APIService getFCMClient(){
+    public static APIService getFCMClient(){
         return FCMRetrofitClient.getClient(fcmUrl).create(APIService.class);
-    }*/
+    }
 
     public static IGeoCoordinates getGeoCodeServices(){
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);

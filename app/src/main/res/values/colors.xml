@@ -10,4 +10,5 @@
     <color name="colorWhiteSmoke">#F5F5F5</color>
     <color name="colorDarkGray">#cccccc</color>
     <color name="btncontinu">#FF8F66</color>
+    <color name="colorBlack">#000000</color>
 </resources>
