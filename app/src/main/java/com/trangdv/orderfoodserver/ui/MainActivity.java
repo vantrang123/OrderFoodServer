@@ -443,12 +443,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "menu", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.nav_cart:
-//                transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-                Cart();
-                Toast.makeText(MainActivity.this, "cart", Toast.LENGTH_SHORT).show();
-                break;
-
             case R.id.nav_status:
                 OrderStatus();
                 Toast.makeText(MainActivity.this, "order status", Toast.LENGTH_SHORT).show();

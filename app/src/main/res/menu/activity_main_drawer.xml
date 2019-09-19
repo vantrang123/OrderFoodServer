@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_menu_food"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_menu_cart"
-            android:title="@string/menu_cart" />
-        <item
             android:id="@+id/nav_status"
             android:icon="@drawable/ic_menu_status"
             android:title="@string/menu_status" />

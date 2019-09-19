@@ -195,15 +195,14 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     }
 
     private boolean checkPlayServices() {
-        int resultCode= GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(resultCode!=ConnectionResult.SUCCESS){
-            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode)){
-                GooglePlayServicesUtil.getErrorDialog(resultCode,this,PLAY_SERVICES_RESOLUTION_REQUEST).show();
+        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        if (resultCode!=ConnectionResult.SUCCESS) {
+            if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)) {
+                GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST);
             }
-            else{
+            else {
                 Toast.makeText(this,"This device does not support Maps!!",Toast.LENGTH_LONG).show();
             }
-            return false;
         }
         return true;
     }

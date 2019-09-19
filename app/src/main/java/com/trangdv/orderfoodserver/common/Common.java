@@ -7,8 +7,8 @@ import android.graphics.Paint;
 
 import com.trangdv.orderfoodserver.model.Request;
 import com.trangdv.orderfoodserver.model.User;
-import com.trangdv.orderfoodserver.remote.APIService;
-import com.trangdv.orderfoodserver.remote.FCMRetrofitClient;
+//import com.trangdv.orderfoodserver.remote.APIService;
+//import com.trangdv.orderfoodserver.remote.FCMRetrofitClient;
 import com.trangdv.orderfoodserver.remote.IGeoCoordinates;
 import com.trangdv.orderfoodserver.remote.RetrofitClient;
 
@@ -32,9 +32,9 @@ public class Common {
         else return "Shipped";
     }
 
-    public static APIService getFCMClient(){
+/*    public static APIService getFCMClient(){
         return FCMRetrofitClient.getClient(fcmUrl).create(APIService.class);
-    }
+    }*/
 
     public static IGeoCoordinates getGeoCodeServices(){
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);
