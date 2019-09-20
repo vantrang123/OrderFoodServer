@@ -28,12 +28,16 @@ public class Common {
     private static final String fcmUrl="https://fcm.googleapis.com/";
 
 
-    public static String convertCodeToStatus(String status) {
-        if (status.equals("0"))
+    public static String convertCodeToStatus(String code){
+
+        if(code.equals("0"))
             return "Placed";
-        else if(status.equals("1"))
-            return "On My Way";
-        else return "Shipped";
+        else if(code.equals("1"))
+            return "Preparing Orders";
+        else if(code.equals("2"))
+            return "Shipping";
+        else
+            return "Delivered";
     }
 
     public static APIService getFCMClient(){

@@ -63,6 +63,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
         request = database.getReference("Requests");
 
         //mService = Common.getFCMClient();
+        mService = Common.getFCMClient();
 
         initView();
         loadOrders();
@@ -108,8 +109,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals(Common.UPDATE)) {
             showUpdateDialog(adpter.getRef(item.getOrder()).getKey(), adpter.getItem(item.getOrder()));
-        }
-        else if (item.getTitle().equals(Common.DELETE)) {
+        } else if (item.getTitle().equals(Common.DELETE)) {
             deleteOrder(adpter.getRef(item.getOrder()).getKey());
         }
         return super.onContextItemSelected(item);
@@ -121,7 +121,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
         alertDialog.setTitle("Update Order");
         alertDialog.setMessage("Please Choose Status");
 
-        LayoutInflater inflater = this.getLayoutInflater();
+        final LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.update_order_layout, null);
 
         spinner = (MaterialSpinner) view.findViewById(R.id.statusSpinner);
@@ -135,7 +135,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot shipperSnapshot:dataSnapshot.getChildren())
+                        for (DataSnapshot shipperSnapshot : dataSnapshot.getChildren())
                             shipperList.add(shipperSnapshot.getKey());
                         shipperSpinner.setItems(shipperList);
                     }
@@ -155,10 +155,9 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
                 dialog.dismiss();
                 item.setStatus(String.valueOf(spinner.getSelectedIndex()));
-
-                if (item.getStatus().equals("2"))
-                {
-                    //copy item to table "OrdersNeedShip"
+                item.getLatitude();
+                item.getLongitude();
+                if (item.getStatus().equals("2")) {
                     FirebaseDatabase.getInstance().getReference(Common.ORDER_NEED_SHIP_TABLE)
                             .child(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString())
                             .child(localKey)
@@ -169,10 +168,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
                     sendOrderStatusToUser(localKey, item);
                     sendOrderShipRequestToShipper(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString(), item);
-                }
-
-                else
-                {
+                } else {
                     request.child(localKey).setValue(item);
                     adpter.notifyDataSetChanged(); //add to update item size
 
@@ -205,7 +201,6 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-
     private void sendOrderStatusToUser(final String key, final Request item) {
         DatabaseReference tokens = database.getReference("Tokens");
         tokens.child(item.getPhone())
@@ -229,7 +224,6 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                                                 , Toast.LENGTH_SHORT).show();
                                     }
                                 }
-
 
                                 @Override
                                 public void onFailure(Call<MyResponse> call, Throwable t) {

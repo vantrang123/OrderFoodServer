@@ -8,6 +8,8 @@ public class Request {
     private String address;
     private String total;
     private String status;
+    private String latitude;
+    private String longitude;
     private List<Order> foods;
     private boolean partial = false;
 
@@ -20,7 +22,19 @@ public class Request {
         this.address = address;
         this.total = total;
         this.foods = foods;
-        this.status="0"; //Default is 0, 0:Placed, 1: Shipping, 2: Shipped
+        this.status="0";
+
+    }
+
+    public Request(String phone, String name, String address, String total, String latitude, String longitude, List<Order> foods) {
+        this.phone = phone;
+        this.name = name;
+        this.address = address;
+        this.total = total;
+        this.foods = foods;
+        this.status="0";
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public boolean isPartial() {
@@ -77,5 +91,21 @@ public class Request {
 
     public void setFoods(List<Order> foods) {
         this.foods = foods;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }
