@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -65,10 +64,6 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
 
     private IGeoCoordinates mService;
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +110,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                 drawRoute(yourLocation,Common.currentRequest.getAddress());
             }
             else{
-                //Toast.makeText(this,"Cannot retrieve the location!!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Cannot retrieve the location!!",Toast.LENGTH_SHORT).show();
             }
         }
     }

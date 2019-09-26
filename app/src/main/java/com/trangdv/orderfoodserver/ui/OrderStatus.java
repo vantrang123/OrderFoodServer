@@ -54,6 +54,9 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
     MaterialSpinner spinner, shipperSpinner;
     APIService mService;
 
+    String globalKey = "";
+    Request iRequest;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +151,9 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
         alertDialog.setView(view);
 
-        final String localKey = key;
+        //final String localKey = key;
+        globalKey = key;
+        iRequest = item;
         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -158,21 +163,13 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                 item.getLatitude();
                 item.getLongitude();
                 if (item.getStatus().equals("2")) {
-                    FirebaseDatabase.getInstance().getReference(Common.ORDER_NEED_SHIP_TABLE)
-                            .child(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString())
-                            .child(localKey)
-                            .setValue(item);
-
-                    request.child(localKey).setValue(item);
-                    adpter.notifyDataSetChanged(); //add to update item size
-
-                    sendOrderStatusToUser(localKey, item);
                     sendOrderShipRequestToShipper(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString(), item);
+
                 } else {
-                    request.child(localKey).setValue(item);
+                    request.child(globalKey).setValue(item);
                     adpter.notifyDataSetChanged(); //add to update item size
 
-                    sendOrderStatusToUser(localKey, item);
+                    sendOrderStatusToUser(globalKey, item);
                 }
 
             }
@@ -260,8 +257,11 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if (response.body().success == 1) {
+                                        updateInfo();
                                         Toast.makeText(OrderStatus.this, "Sent to Shippers!", Toast.LENGTH_SHORT).show();
                                     } else {
+
+
                                         Toast.makeText(OrderStatus.this, "Failed to send notification!"
                                                 , Toast.LENGTH_SHORT).show();
                                     }
@@ -281,5 +281,17 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
 
                     }
                 });
+    }
+
+    private void updateInfo() {
+        FirebaseDatabase.getInstance().getReference(Common.ORDER_NEED_SHIP_TABLE)
+                .child(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString())
+                .child(globalKey)
+                .setValue(iRequest);
+
+        request.child(globalKey).setValue(iRequest);
+        adpter.notifyDataSetChanged(); //add to update item size
+
+        sendOrderStatusToUser(globalKey, iRequest);
     }
 }
