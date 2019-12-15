@@ -208,7 +208,7 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                             Token token = dataSnapshot.getValue(Token.class);
 
                             //make raw payload
-                            Notification notification = new Notification("iDeliveryServer", "Your order " + key + " was updated");
+                            Notification notification = new Notification("OrderFood", "Your order " + key + " was updated");
                             Sender content = new Sender(token.getToken(), notification);
 
                             mService.sendNotification(content).enqueue(new Callback<MyResponse>() {
@@ -250,7 +250,8 @@ public class OrderStatus extends AppCompatActivity implements OnMapReadyCallback
                             Token token = dataSnapshot.getValue(Token.class);
 
                             //make raw payload
-                            Notification notification = new Notification("iDeliveryServer", "You have new order need ship");
+//                            Notification notification = new Notification("OrderFood", "You have new order need ship");
+                            Notification notification = new Notification("OrderFood", getString(R.string.text_notification_order_to_shipper));
                             Sender content = new Sender(token.getToken(), notification);
 
                             mService.sendNotification(content).enqueue(new Callback<MyResponse>() {
