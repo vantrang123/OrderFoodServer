@@ -25,4 +25,5 @@
 
     <string name="added_to_cart">Added to Cart</string>
     <string name="title_activity_tracking_order">Map</string>
+    <string name="text_notification_order_to_shipper">Bạn có một đơn hàng mới cần giao!</string>
 </resources>
