@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     Toolbar toolbar;
-    private TextView txtUserName;
+    private TextView txtUserName, tvUserPhone;
     RecyclerView recycler_menu;
     RecyclerView.LayoutManager layoutManager;
     EditText editName;
@@ -119,7 +119,10 @@ public class MainActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         txtUserName = headerView.findViewById(R.id.tv_username);
+        tvUserPhone = headerView.findViewById(R.id.tv_userPhone);
         txtUserName.setText(Common.currentRestaurantOwner.getName());
+        tvUserPhone.setText(Common.currentRestaurantOwner.getUserPhone());
+
 
         init();
         loadMenu();
