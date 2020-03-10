@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import com.trangdv.orderfoodserver.model.Request;
+import com.trangdv.orderfoodserver.model.RestaurantOwner;
 import com.trangdv.orderfoodserver.model.User;
 //import com.trangdv.orderfoodserver.remote.APIService;
 //import com.trangdv.orderfoodserver.remote.FCMRetrofitClient;
@@ -15,7 +16,11 @@ import com.trangdv.orderfoodserver.remote.IGeoCoordinates;
 import com.trangdv.orderfoodserver.remote.RetrofitClient;
 
 public class Common {
+    public static final String API_KEY = "1234";
+    public static final String API_ANNGON_ENDPOINT = "http://192.168.137.1:3000";
+
     public static User currentUser;
+    public static RestaurantOwner currentRestaurantOwner;
     public static Request currentRequest;
     public static final String DELETE = "Delete";
     public static final String UPDATE="Update";
@@ -26,7 +31,6 @@ public class Common {
 
     public static final String baseUrl="https://maps.googleapis.com";
     private static final String fcmUrl="https://fcm.googleapis.com/";
-
 
     public static String convertCodeToStatus(String code){
 

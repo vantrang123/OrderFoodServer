@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hbb20.CountryCodePicker;
 import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.model.User;
 
@@ -24,10 +25,12 @@ public class SignupActivity extends AppCompatActivity {
     private EditText edt_phonenumber;
     private EditText edt_password;
     private FloatingActionButton fab;
+    private CountryCodePicker countryCodePicker;
 
     private String name;
     private String phonenumber;
     private String password;
+    private String code;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference table_user = database.getReference("User");
@@ -46,6 +49,7 @@ public class SignupActivity extends AppCompatActivity {
         edt_username = findViewById(R.id.username_edt);
         edt_phonenumber = findViewById(R.id.phonenumber_edt_signup);
         edt_password = findViewById(R.id.password_edt_signup);
+        countryCodePicker = findViewById(R.id.contry_code_picker);
 
         fab = findViewById(R.id.fab_back_login);
         setClickNext();
@@ -57,10 +61,24 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getTextfromEdt();
                 if (name.equals("")==false && phonenumber.equals("")==false && password.equals("")==false) {
-                    createUser();
+//                    createUser();
+                    gotoVerification();
                 }
             }
         });
+    }
+
+    private void gotoVerification() {
+        String phoneNumber = "+" + code + phonenumber;
+
+        Intent intent = new Intent(SignupActivity.this, VerifyPhoneActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("phoneNumber", phoneNumber);
+        bundle.putString("userName", name);
+        bundle.putString("password", password);
+        intent.putExtras(bundle);
+//        intent.putExtra("phoneNumber", phoneNumber);
+        startActivity(intent);
     }
 
     private void createUser() {
@@ -94,6 +112,7 @@ public class SignupActivity extends AppCompatActivity {
         phonenumber = edt_phonenumber.getText().toString();
         password = edt_password.getText().toString();
         name = edt_username.getText().toString();
+        code = countryCodePicker.getSelectedCountryCode().trim();
 
     }
 

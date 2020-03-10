@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,12 +44,14 @@ import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.listener.ItemClickListener;
 import com.trangdv.orderfoodserver.model.Category;
+import com.trangdv.orderfoodserver.model.RestaurantOwner;
 import com.trangdv.orderfoodserver.model.User;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 import com.trangdv.orderfoodserver.viewholder.MenuViewHolder;
 
 import java.util.UUID;
 
+import static com.trangdv.orderfoodserver.ui.LoginActivity.SAVE_RESTAURANT_OWNER;
 import static com.trangdv.orderfoodserver.ui.LoginActivity.SAVE_USER;
 
 public class MainActivity extends AppCompatActivity
@@ -111,9 +114,12 @@ public class MainActivity extends AppCompatActivity
         User user = SharedPrefs.getInstance().get(SAVE_USER, User.class);
         Common.currentUser = user;
 
+        RestaurantOwner owner = SharedPrefs.getInstance().get(SAVE_RESTAURANT_OWNER, RestaurantOwner.class);
+        Common.currentRestaurantOwner = owner;
+
         View headerView = navigationView.getHeaderView(0);
         txtUserName = headerView.findViewById(R.id.tv_username);
-        txtUserName.setText(Common.currentUser.getName());
+        txtUserName.setText(Common.currentRestaurantOwner.getName());
 
         init();
         loadMenu();
@@ -450,6 +456,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_exit:
                 SharedPrefs.getInstance().clear();
+                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

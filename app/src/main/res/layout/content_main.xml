@@ -13,8 +13,8 @@
         android:id="@+id/recycler_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dimens_16"
-        android:layout_marginRight="@dimen/dimens_16"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         />
 
 </LinearLayout>

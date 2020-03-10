@@ -10,26 +10,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.model.User;
+import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
+import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
+import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class LoginActivity extends AppCompatActivity {
+
+    IAnNgonAPI anNgonAPI;
+    CompositeDisposable compositeDisposable;
+    DialogUtils dialogUtils;
+
     public static final int REQUEST_CODE = 2019;
     public static final String KEY_PHONENUMBER = "key phonenumber address";
     public static final String KEY_PASSWORD = "key password";
     public static final String SAVE_USER = "save user";
+    public static final String SAVE_RESTAURANT_OWNER = "save restaurant owner";
 
     private TextView dispatch_signup;
     private EditText edt_phonenumber;
@@ -47,11 +56,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        inits();
+        init();
     }
 
-    private void inits() {
-
+    private void init() {
+        anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
+        compositeDisposable = new CompositeDisposable();
+        dialogUtils = new DialogUtils();
 
         dispatch_signup = findViewById(R.id.dispatch_signup);
         setClickDispatchSignup();
@@ -94,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getTextfromEdt();
 
-                if (phonenumber.equals("")==false && password.equals("")==false) {
+                if (phonenumber.equals("") == false && password.equals("") == false) {
                     authLogin();
                 }
 
@@ -108,46 +119,34 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void authLogin() {
-        table_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //check if user not exist in database
-                if (dataSnapshot.child(phonenumber).exists()) {
-                    User user = dataSnapshot.child(phonenumber).getValue(User.class);
-                    user.setPhone(phonenumber);
+        dialogUtils.showProgress(this);
+        compositeDisposable.add(
+                anNgonAPI.getRestaurantOwner(Common.API_KEY, "473267976752534")
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(restaurantOwnerModel -> {
+                                    if (restaurantOwnerModel.isSuccess()) {
+                                        // save curreentUser
+                                        Common.currentRestaurantOwner = restaurantOwnerModel.getResult().get(0);
 
-                    if (Boolean.parseBoolean(user.getIsStaff())) {
-                        if (user.getPassword().equals(password)) {
-                            SharedPrefs.getInstance().put(SplashActivity.CHECK_ALREADLY_LOGIN, 1);
-                            SharedPrefs.getInstance().put(SAVE_USER, user);
-                            intoHome(user);
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Wrong Password !", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(LoginActivity.this,"Please Login with Staff account",Toast.LENGTH_SHORT).show();
-                    }
+                                        SharedPrefs.getInstance().put(SplashActivity.CHECK_ALREADLY_LOGIN, 2);
 
-                    /*if (user.getPassword().equals(password)) {
-                        SharedPrefs.getInstance().put(SplashActivity.CHECK_ALREADLY_LOGIN, 1);
+                                        //save user in share pref
+                                        SharedPrefs.getInstance().put(SAVE_RESTAURANT_OWNER, Common.currentRestaurantOwner);
 
-                        //save user in share pref
-                        SharedPrefs.getInstance().put(SAVE_USER, user);
-                        intoHome(user);
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Wrong Password !", Toast.LENGTH_SHORT).show();
-                    }*/
-                } else {
-                    Toast.makeText(LoginActivity.this, "User not exist in Database !", Toast.LENGTH_SHORT).show();
-                }
-            }
+                                        gotoMainActivity();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    } else {
+                                        Toast.makeText(this, "[GET USER API NOT DATABASE]", Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialogUtils.dismissProgress();
 
-            }
-        });
-
+                                },
+                                throwable -> {
+                                    Toast.makeText(this, "[GET USER API]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    dialogUtils.dismissProgress();
+                                }
+                        ));
     }
 
     private void intoHome(User user) {
@@ -158,11 +157,23 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    private void gotoMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+        startActivity(intent);
+        finish();
+    }
+
     private void setTextintoEdt() {
         edt_phonenumber.setText(phonenumber);
         edt_password.setText(password);
     }
 
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
 
     //
     @Override

@@ -33,8 +33,8 @@
         android:src="@drawable/ic_add_list"
         app:backgroundTint="@color/colorOrange"
         android:layout_gravity="bottom|right"
-        android:layout_marginRight="@dimen/dimens_30"
-        android:layout_marginBottom="@dimen/dimens_30"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

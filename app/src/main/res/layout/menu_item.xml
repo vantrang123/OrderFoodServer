@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/item_root"
         app:layout_constraintLeft_toRightOf="@id/menu_img"
-        android:layout_marginLeft="@dimen/dimens_10"
+        android:layout_marginLeft="10dp"
         android:gravity="top" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

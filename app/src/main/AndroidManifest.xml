@@ -53,6 +53,7 @@
         <activity android:name=".ui.SignupActivity" />
         <activity android:name=".ui.FoodList" />
         <activity android:name=".ui.OrderStatus" />
+        <activity android:name=".ui.VerifyPhoneActivity" />
 
         <service
             android:name=".service.ListenOrder">

@@ -9,6 +9,26 @@
     <color name="colorOrange">#FF8F66</color>
     <color name="colorWhiteSmoke">#F5F5F5</color>
     <color name="colorDarkGray">#cccccc</color>
-    <color name="btncontinu">#FF8F66</color>
-    <color name="colorBlack">#000000</color>
+    <color name="bg_row_background">#fa315b</color>
+    <color name="item_name">#535353</color>
+    <color name="description">#a9a9a9</color>
+    <color name="light_blue">#3672ae</color>
+    <color name="gray">#F4F4F4</color>
+    <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="bg">#dddddd</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorPressed">#E0E0E0</color>
+    <color name="colorGreen">#07da63</color>
+    <color name="line_color">#DCDCDC</color>
+
+    <color name="grey_40">#999999</color>
+    <color name="grey_60">#666666</color>
+    <color name="grey_80">#37474F</color>
+    <color name="grey_90">#263238</color>
+
+    <color name="red_300">#E57373</color>
+    <color name="red_400">#EF5350</color>
+    <color name="white_fa">#FAFAFA</color>
+    <color name="tv_gray_six_one">#616161</color>
 </resources>

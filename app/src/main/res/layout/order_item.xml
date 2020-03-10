@@ -5,9 +5,9 @@
     android:id="@+id/container_order_status"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dimens_10"
+    android:layout_margin="10dp"
     android:background="@color/colorWhiteSmoke"
-    android:paddingLeft="@dimen/dimens_10"
+    android:paddingLeft="10dp"
     android:elevation="@dimen/dimens_5dp">
     <TextView
         android:id="@+id/order_id"
