@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.trangdv.orderfoodserver"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -68,6 +68,16 @@ dependencies {
 
     // contrycode
     implementation 'com.hbb20:ccp:2.3.7'
+
+    // Expandable layout
+    implementation 'com.github.florent37:expansionpanel:1.2.2'
+
+    // glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // paper
+    implementation 'io.paperdb:paperdb:2.6'
 
 }
 apply plugin: 'com.google.gms.google-services'

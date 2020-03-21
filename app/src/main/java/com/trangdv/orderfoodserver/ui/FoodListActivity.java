@@ -39,7 +39,7 @@ import com.trangdv.orderfoodserver.viewholder.FoodViewHolder;
 
 import java.util.UUID;
 
-public class FoodList extends AppCompatActivity {
+public class FoodListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
@@ -87,7 +87,7 @@ public class FoodList extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FoodList.this, "FoodList" + this.getClass().getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodListActivity.this, "FoodList" + this.getClass().getName(), Toast.LENGTH_SHORT).show();
                 showAddFoodDialog();
             }
         });
@@ -103,7 +103,7 @@ public class FoodList extends AppCompatActivity {
 
     //showAddFoodDialog() method
     private void showAddFoodDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodList.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
         alertDialog.setTitle("Add new Food");
         alertDialog.setMessage("Please fill full information");
 
@@ -183,7 +183,7 @@ public class FoodList extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodList.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FoodListActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -203,7 +203,7 @@ public class FoodList extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodList.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FoodListActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -281,7 +281,7 @@ public class FoodList extends AppCompatActivity {
     private void showUpdateFoodDialog(final String key, final Food item) {
 
         //just copy code from showAddFoodDialog() method
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodList.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
         alertDialog.setTitle("Edit Food Food");
         alertDialog.setMessage("Please fill full information");
 
@@ -365,7 +365,7 @@ public class FoodList extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodList.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FoodListActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -379,7 +379,7 @@ public class FoodList extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodList.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FoodListActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

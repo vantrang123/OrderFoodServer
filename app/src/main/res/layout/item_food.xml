@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="5dp"
+    android:layout_marginTop="@dimen/dimens_5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_food_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            tools:text="@string/app_name"
+            android:textSize="@dimen/dimens_12sp"
+            app:layout_constraintLeft_toRightOf="@id/cv_food_image"
+            app:layout_constraintTop_toBottomOf="@id/tv_food_name" />
+
+        <TextView
+            android:id="@+id/tv_food_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            tools:text="@string/app_name"
+            android:textSize="@dimen/dimens_12sp"
+            app:layout_constraintBottom_toBottomOf="@id/container_food_item"
+            app:layout_constraintLeft_toRightOf="@id/cv_food_image" />
+
+        <TextView
+            android:id="@+id/tv_food_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_30dp"
+            android:inputType="textMultiLine"
+            android:maxLines="2"
+            android:textSize="@dimen/dimens_12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/cv_food_image"
+            app:layout_constraintStart_toEndOf="@id/cv_food_image"
+            app:layout_constraintTop_toTopOf="@id/container_food_item"
+            tools:text="aaaaaaaaaaaaaaaaaasssssssssssssssssssdddddddddddddddddddaaaaaaaaaaaaaaassssss" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_food_image"
+            android:layout_width="@dimen/dimens_90dp"
+            android:layout_height="@dimen/dimens_90dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintLeft_toLeftOf="@id/container_food_item"
+            app:layout_constraintTop_toTopOf="@id/container_food_item">
+
+            <ImageView
+                android:id="@+id/iv_food_image"
+                android:layout_width="@dimen/dimens_90dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_default" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

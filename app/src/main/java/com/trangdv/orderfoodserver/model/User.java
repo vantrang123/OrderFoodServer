@@ -1,45 +1,44 @@
 package com.trangdv.orderfoodserver.model;
 
 public class User {
-    private String Name,Password,Phone,IsStaff;
+    private String fbid, userPhone, name, address;
 
-    public User() {
+    public User(String fbid, String userPhone, String name, String address) {
+        this.fbid = fbid;
+        this.userPhone = userPhone;
+        this.name = name;
+        this.address = address;
     }
 
-    public User(String name, String password) {
-        Name = name;
-        Password = password;
+    public String getFbid() {
+        return fbid;
+    }
+
+    public void setFbid(String fbid) {
+        this.fbid = fbid;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
-    public String getPassword() {
-        return Password;
+    public String getAddress() {
+        return address;
     }
 
-    public void setPassword(String password) {
-        Password = password;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
-    }
-
-    public String getIsStaff() {
-        return IsStaff;
-    }
-
-    public void setIsStaff(String isStaff) {
-        IsStaff = isStaff;
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

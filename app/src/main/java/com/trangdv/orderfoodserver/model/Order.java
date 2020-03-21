@@ -1,60 +1,107 @@
 package com.trangdv.orderfoodserver.model;
 
+import java.util.Date;
+
 public class Order {
-    private String ProductId;
-    private String ProductName;
-    private String Quanlity;
-    private String Price;
-    private String Discount;
+    private String orderPhone, orderName, orderAddress, transactionId, orderFBID;
+    private Date orderDate;
+    private boolean cod;
+    private Double totalPrice;
+    private int orderId, orderStatus, restaurantId, numOfItem;
 
-    public Order() {
+    public String getOrderFBID() {
+        return orderFBID;
     }
 
-    public Order(String productId, String productName, String quanlity, String price, String discount) {
-        ProductId = productId;
-        ProductName = productName;
-        Quanlity = quanlity;
-        Price = price;
-        Discount = discount;
+    public void setOrderFBID(String orderFBID) {
+        this.orderFBID = orderFBID;
     }
 
-    public String getProductId() {
-        return ProductId;
+    public String getOrderPhone() {
+        return orderPhone;
     }
 
-    public void setProductId(String productId) {
-        ProductId = productId;
+    public void setOrderPhone(String orderPhone) {
+        this.orderPhone = orderPhone;
     }
 
-    public String getProductName() {
-        return ProductName;
+    public String getOrderName() {
+        return orderName;
     }
 
-    public void setProductName(String productName) {
-        ProductName = productName;
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
-    public String getQuanlity() {
-        return Quanlity;
+    public String getOrderAddress() {
+        return orderAddress;
     }
 
-    public void setQuanlity(String quanlity) {
-        Quanlity = quanlity;
+    public void setOrderAddress(String orderAddress) {
+        this.orderAddress = orderAddress;
     }
 
-    public String getPrice() {
-        return Price;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setPrice(String price) {
-        Price = price;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public String getDiscount() {
-        return Discount;
+    public Date getOrderDate() {
+        return orderDate;
     }
 
-    public void setDiscount(String discount) {
-        Discount = discount;
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public boolean isCod() {
+        return cod;
+    }
+
+    public void setCod(boolean cod) {
+        this.cod = cod;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public int getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(int orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public int getNumOfItem() {
+        return numOfItem;
+    }
+
+    public void setNumOfItem(int numOfItem) {
+        this.numOfItem = numOfItem;
     }
 }

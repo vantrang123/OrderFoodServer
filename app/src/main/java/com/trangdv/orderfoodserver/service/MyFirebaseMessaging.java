@@ -14,20 +14,31 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.trangdv.orderfoodserver.R;
+import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.helper.NotificationHelper;
 import com.trangdv.orderfoodserver.ui.MainActivity;
-import com.trangdv.orderfoodserver.ui.OrderStatus;
+import com.trangdv.orderfoodserver.ui.OrderActivity;
 
+import java.util.Map;
 import java.util.Random;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             sendNotificationAPI26(remoteMessage);
         else
-            sendNotification(remoteMessage);
+            sendNotification(remoteMessage);*/
+
+        Map<String,String> dataRecv = remoteMessage.getData();
+        if (dataRecv != null) {
+            Common.showNotification(this,
+                    new Random().nextInt(),
+                    dataRecv.get(Common.NOTIFI_TITLE),
+                    dataRecv.get(Common.NOTIFI_CONTENT),
+                    null);
+        }
     }
 
     private void sendNotificationAPI26(RemoteMessage remoteMessage) {
@@ -36,7 +47,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String content = notification.getBody();
 
         //Intent intent = new Intent(this, OrderStatusFragment.class);
-        Intent intent = new Intent(this, OrderStatus.class);
+        Intent intent = new Intent(this, OrderActivity.class);
 //        intent.putExtra(Common.PHONE_TEXT, Common.currentUser.getPhone());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);

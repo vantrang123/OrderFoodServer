@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OrderFood</string>
+    <string name="app_name">OrderFood Manager</string>
     <string name="sologan">Đừng bỏ bữa, bạn nhé!</string>
     <string name="text_login">Login</string>
     <string name="text_signup">Signup</string>
@@ -47,8 +47,14 @@
     <string name="txt_manage_addresses">Manage Addresses</string>
     <string name="txt_edit">Chỉnh sửa</string>
     <string name="txt_profile">Trang cá nhân</string>
+    <string name="txt_order_detail">Chi tiết đơn hàng</string>
+    <string name="txt_order_placed">Đã đặt hàng</string>
+    <string name="txt_shipping">Đang giao</string>
+    <string name="txt_shipped">Đã giao</string>
     <string name="txt_place_order">Đặt món</string>
     <string name="txt_order">Đặt hàng</string>
+    <string name="txt_cancelled">Đã hủy</string>
+    <string name="txt_update">Cập nhật</string>
     <string name="txt_cart_empty">Giỏ hàng rỗng!!!</string>
     <string name="txt_date">Date</string>
     <string name="txt_seleted_date">Selected Date</string>
@@ -59,6 +65,7 @@
     <string name="txt_proceed">Tiến hành</string>
     <string name="title_activity_nearby_restaurnt">Map</string>
     <string name="title_dialog_gps">Reminder</string>
+    <string name="title_dialog_confirm_update_status">Thay đổi trạng thái đơn hàng?</string>
     <string name="txt_body_dialog_gps">Bạn nên mở dịch vụ truy cập vị trí cho ứng dụng để hiển thị địa điểm lân cận</string>
     <string name="title_activity_tracking_order">Map</string>
     <string name="text_notification_order_to_shipper">You have new order need ship</string>

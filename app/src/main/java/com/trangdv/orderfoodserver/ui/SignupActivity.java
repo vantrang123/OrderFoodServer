@@ -81,6 +81,7 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+/*
     private void createUser() {
         table_user.addValueEventListener(new ValueEventListener() {
             @Override
@@ -107,6 +108,7 @@ public class SignupActivity extends AppCompatActivity {
         });
 
     }
+*/
 
     private void getTextfromEdt() {
         phonenumber = edt_phonenumber.getText().toString();

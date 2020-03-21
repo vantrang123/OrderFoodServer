@@ -45,8 +45,8 @@ public class Request {
         this.partial = partial;
     }
 
-    public String getStatus() {
-        return status;
+    public int getStatus() {
+        return Integer.parseInt(status);
     }
 
     public void setStatus(String status) {

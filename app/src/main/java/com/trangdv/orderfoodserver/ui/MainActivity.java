@@ -27,14 +27,19 @@ import android.widget.Toast;
 
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -45,18 +50,25 @@ import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.listener.ItemClickListener;
 import com.trangdv.orderfoodserver.model.Category;
 import com.trangdv.orderfoodserver.model.RestaurantOwner;
-import com.trangdv.orderfoodserver.model.User;
+import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
+import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 import com.trangdv.orderfoodserver.viewholder.MenuViewHolder;
 
 import java.util.UUID;
 
+import io.paperdb.Paper;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.trangdv.orderfoodserver.ui.LoginActivity.SAVE_RESTAURANT_OWNER;
-import static com.trangdv.orderfoodserver.ui.LoginActivity.SAVE_USER;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    IAnNgonAPI anNgonAPI;
+    CompositeDisposable compositeDisposable;
 
     FragmentManager fragmentManager;
     Toolbar toolbar;
@@ -110,10 +122,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        //get user from share pref
-        User user = SharedPrefs.getInstance().get(SAVE_USER, User.class);
-        Common.currentUser = user;
-
         RestaurantOwner owner = SharedPrefs.getInstance().get(SAVE_RESTAURANT_OWNER, RestaurantOwner.class);
         Common.currentRestaurantOwner = owner;
 
@@ -123,10 +131,31 @@ public class MainActivity extends AppCompatActivity
         txtUserName.setText(Common.currentRestaurantOwner.getName());
         tvUserPhone.setText(Common.currentRestaurantOwner.getUserPhone());
 
-
         init();
+        refreshToke();
         loadMenu();
+        subscribeToTopic(Common.getTopicChannel(Common.currentRestaurantOwner.getRestaurantId()));
+    }
 
+    private void refreshToke() {
+        Paper.book().write(Common.REMENBER_FBID, Common.currentRestaurantOwner.getFbid());
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        compositeDisposable.add(anNgonAPI.updateToken(Common.API_KEY,
+                                Common.currentRestaurantOwner.getFbid(),
+                                task.getResult().getToken())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(tokenModel -> {
+                                        }
+                                        , throwable -> {
+                                        }
+                                ));
+                    }
+                });
     }
 
     private void loadMenu() {
@@ -146,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {
                             //Send Category ID and Start new Activity
-                            Intent foodList = new Intent(MainActivity.this, FoodList.class);
+                            Intent foodList = new Intent(MainActivity.this, FoodListActivity.class);
                             foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
                             startActivity(foodList);
                         }
@@ -160,9 +189,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init() {
+        Paper.init(this);
+        anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
+        compositeDisposable = new CompositeDisposable();
         recycler_menu = findViewById(R.id.recycler_menu);
         layoutManager = new LinearLayoutManager(this);
         recycler_menu.setLayoutManager(layoutManager);
+    }
+
+    private void subscribeToTopic(String topicChannel) {
+        FirebaseMessaging.getInstance()
+                .subscribeToTopic(topicChannel)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Failed! You may not receive", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
 
@@ -406,7 +459,7 @@ public class MainActivity extends AppCompatActivity
         /*fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new OrderStatusFragment())
                 .commit();*/
-        Intent intent = new Intent(MainActivity.this, OrderStatus.class);
+        Intent intent = new Intent(MainActivity.this, OrderActivity.class);
         startActivity(intent);
     }
 
@@ -471,4 +524,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
 }

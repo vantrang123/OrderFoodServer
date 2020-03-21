@@ -24,6 +24,7 @@ import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 
+import io.paperdb.Paper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -121,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
     private void authLogin() {
         dialogUtils.showProgress(this);
         compositeDisposable.add(
-                anNgonAPI.getRestaurantOwner(Common.API_KEY, "473267976752534")
+                anNgonAPI.getRestaurantOwner(Common.API_KEY, "k1o2DavRpsY959Mdwwt4ZSFDx7C3")
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(restaurantOwnerModel -> {
