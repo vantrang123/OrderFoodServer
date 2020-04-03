@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,20 +18,14 @@ import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.adapter.OrderItemAdapter;
 import com.trangdv.orderfoodserver.adapter.PagerOrderDetailAdapger;
 import com.trangdv.orderfoodserver.common.Common;
-import com.trangdv.orderfoodserver.model.OrderDetail;
-import com.trangdv.orderfoodserver.model.Status;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.ui.OrderActivity;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class OrderDetailActivity extends AppCompatActivity implements OrderItemAdapter.ItemListener, View.OnClickListener {
     IAnNgonAPI anNgonAPI;
@@ -109,12 +101,12 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
 
     private void findViewById() {
 //        spStatus = findViewById(R.id.status_spinner);
-        tvOrderNumber = findViewById(R.id.tv_order_number);
+        tvOrderNumber = findViewById(R.id.tv_order_id);
         refreshLayout = findViewById(R.id.swr_order_detail);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
         tvOrderOn = findViewById(R.id.tv_ordered_on);
-        tvOrderNumber = findViewById(R.id.tv_order_number);
+        tvOrderNumber = findViewById(R.id.tv_order_id);
         tvPrice = findViewById(R.id.tv_price);
         ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(this);

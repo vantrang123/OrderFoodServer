@@ -37,28 +37,36 @@
     <string name="txt_no">Không</string>
 
     <string name="txt_near_you">Gần bạn</string>
+    <string name="txt_money">Tổng tiền</string>
+    <string name="txt_num_of_item">Số món</string>
     <string name="txt_suggestion">Gợi ý</string>
     <string name="txt_see_more">Xem thêm</string>
     <string name="tv_search">Tìm kiếm</string>
     <string name="txt_my_order">My Orders</string>
     <string name="txt_logout">Logout</string>
     <string name="txt_help">Help</string>
-    <string name="txt_payments">Payments</string>
+    <string name="txt_payments">Phương thức thanh toán</string>
     <string name="txt_manage_addresses">Manage Addresses</string>
     <string name="txt_edit">Chỉnh sửa</string>
     <string name="txt_profile">Trang cá nhân</string>
     <string name="txt_order_detail">Chi tiết đơn hàng</string>
+    <string name="txt_order_list">Danh sách đơn hàng</string>
     <string name="txt_order_placed">Đã đặt hàng</string>
     <string name="txt_shipping">Đang giao</string>
     <string name="txt_shipped">Đã giao</string>
     <string name="txt_place_order">Đặt món</string>
     <string name="txt_order">Đặt hàng</string>
     <string name="txt_cancelled">Đã hủy</string>
+    <string name="txt_cancell">Hủy</string>
+    <string name="txt_post">Đăng</string>
     <string name="txt_update">Cập nhật</string>
+    <string name="txt_status">Trạng thái</string>
+    <string name="txt_phone">Số điện thoại</string>
     <string name="txt_cart_empty">Giỏ hàng rỗng!!!</string>
     <string name="txt_date">Date</string>
+    <string name="txt_order_on">Ngày đặt hàng</string>
     <string name="txt_seleted_date">Selected Date</string>
-    <string name="txt_address">Address</string>
+    <string name="txt_address">Địa chỉ</string>
     <string name="txt_add_new_address">Add New Address</string>
     <string name="txt_cash_on_deliver">Thanh toán khi nhận hàng</string>
     <string name="txt_online_payment">Thanh toán Online</string>
@@ -69,6 +77,12 @@
     <string name="txt_body_dialog_gps">Bạn nên mở dịch vụ truy cập vị trí cho ứng dụng để hiển thị địa điểm lân cận</string>
     <string name="title_activity_tracking_order">Map</string>
     <string name="text_notification_order_to_shipper">You have new order need ship</string>
+    <string name="txt_title_add_new_menu_success">Tạo menu thành công</string>
+    <string name="txt_content_add_new_menu_success">Bạn đã tạo một menu hãy tiếp tục thêm món ăn</string>
+    <string name="txt_title_add_new_menu">Thêm mới menu</string>
+    <string name="txt_title_add_new_food">Thêm mới món</string>
+    <string name="txt_content_add_new_menu">Vui lòng điền đủ thông tin bên dưới</string>
+    <string name="txt_delete">Xóa</string>
 
 
 </resources>

@@ -103,8 +103,7 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
             holder.imgFood.setImageBitmap(orderDetailList.get(position).getBitmapImage());
         }
 
-        if (orderDetailList.get(position).getAddOn().toLowerCase().equals("[]") ||
-                orderDetailList.get(position).getAddOn().toLowerCase().equals("nomal")) {
+        if (orderDetailList.get(position).getAddOn().toLowerCase().equals("normal")) {
             holder.lnAddon.setVisibility(View.GONE);
         } else {
             holder.lnAddon.setVisibility(View.VISIBLE);

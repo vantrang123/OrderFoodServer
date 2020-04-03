@@ -1,9 +1,12 @@
 package com.trangdv.orderfoodserver.retrofit;
 
 
+import com.trangdv.orderfoodserver.model.FoodModel;
 import com.trangdv.orderfoodserver.model.MaxOrderModel;
+import com.trangdv.orderfoodserver.model.MenuModel;
 import com.trangdv.orderfoodserver.model.OrderDetailModel;
 import com.trangdv.orderfoodserver.model.OrderModel;
+import com.trangdv.orderfoodserver.model.RestaurantMenuModel;
 import com.trangdv.orderfoodserver.model.RestaurantOwnerModel;
 import com.trangdv.orderfoodserver.model.TokenModel;
 import com.trangdv.orderfoodserver.model.UpdateOrderModel;
@@ -43,8 +46,8 @@ public interface IAnNgonAPI {
     @PUT("updateOrder")
     @FormUrlEncoded
     Observable<UpdateOrderModel> updateOrderStatus(@Field("key") String apiKey,
-                                             @Field("orderId") int orderId,
-                                             @Field("orderStatus") int orderStatus);
+                                                   @Field("orderId") int orderId,
+                                                   @Field("orderStatus") int orderStatus);
 
     @GET("orderdetailbyrestaurant")
     Observable<OrderDetailModel> getOrderDetailModel(@Query("key") String apiKey,
@@ -59,6 +62,52 @@ public interface IAnNgonAPI {
     Observable<TokenModel> updateToken(@Field("key") String apiKey,
                                        @Field("fbid") String fbid,
                                        @Field("token") String token);
+
+    @GET("menu")
+    Observable<MenuModel> getCategories(@Query("key") String apiKey,
+                                        @Query("restaurantId") int restaurantId);
+
+    @GET("food")
+    Observable<FoodModel> getFoodOfMenu(@Query("key") String apiKey,
+                                        @Query("menuId") int menuId);
+
+    @POST("createmenu")
+    @FormUrlEncoded
+    Observable<MenuModel> createMenu(@Field("key") String apiKey,
+                                     @Field("name") String name,
+                                     @Field("description") String description,
+                                     @Field("image") String image);
+
+    @PUT("updatemenu")
+    @FormUrlEncoded
+    Observable<MenuModel> updateMenu(@Field("key") String apiKey,
+                                     @Field("menuId") int menuId,
+                                     @Field("name") String name,
+                                     @Field("description") String description,
+                                     @Field("image") String image);
+
+    @POST("restaurantmenu")
+    @FormUrlEncoded
+    Observable<RestaurantMenuModel> createRestaurantMenu(@Field("key") String apiKey,
+                                                         @Field("menuId") int menuId,
+                                                         @Field("restaurantId") int restaurantId);
+
+    @POST("createfood")
+    @FormUrlEncoded
+    Observable<FoodModel> createFood(@Field("key") String apiKey,
+                                     @Field("name") String name,
+                                     @Field("description") String description,
+                                     @Field("image") String image,
+                                     @Field("price") float price,
+                                     @Field("isSize") String isSize,
+                                     @Field("isAddon") String isAddon,
+                                     @Field("discount") int discount);
+
+    @POST("menufood")
+    @FormUrlEncoded
+    Observable<RestaurantMenuModel> createMenuFood(@Field("key") String apiKey,
+                                                         @Field("menuId") int menuId,
+                                                         @Field("foodId") int foodId);
 
     /*@DELETE("favorite")
     Observable<FavoriteModel> removeFavorite(@Query("key") String apiKey,

@@ -25,7 +25,7 @@
             android:id="@+id/statusSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:ms_background_color="@color/colorOrange" />
+            app:ms_background_color="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:id="@+id/shipperSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:ms_background_color="@color/colorOrange" />
+            app:ms_background_color="@color/colorAccent" />
 
 
     </LinearLayout>

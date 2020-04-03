@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardElevation="2dp"
+    android:background="@color/colorWhite"
     app:cardCornerRadius="8dp"
+    app:layout_goneMarginTop="10dp"
     android:layout_marginTop="@dimen/dimens_5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -14,8 +16,26 @@
         android:layout_height="wrap_content"
         android:padding="5dp">
 
+        <!--<ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimens_5dp"
+            android:src="@drawable/ic_favorite_gray"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/button_effect_oval"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_more" />
+
         <TextView
-            android:id="@+id/tv_quantity"
+            android:id="@+id/tv_food_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_10dp"
@@ -25,7 +45,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_food_name" />
 
         <TextView
-            android:id="@+id/tv_food_size"
+            android:id="@+id/tv_food_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_10dp"

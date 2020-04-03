@@ -31,10 +31,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_list"
-        app:backgroundTint="@color/colorOrange"
+        app:backgroundTint="@color/colorAccent"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
         />
+    <!--<com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fab_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        app:fab_addButtonColorNormal="@color/colorPrimary"
+        app:fab_addButtonColorPressed="@color/colorWhiteSmoke"
+        app:fab_addButtonStrokeVisible="false"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="28dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_edit_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_addButtonSize="mini"
+            android:src="@drawable/ic_edit"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_size="mini"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_addButtonSize="mini"
+            android:src="@drawable/ic_add_list"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_size="mini"/>
+
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

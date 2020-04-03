@@ -1,71 +1,83 @@
 package com.trangdv.orderfoodserver.model;
 
+import android.graphics.Bitmap;
+
 public class Food {
-    private String Name;
-    private String Image;
-    private String Description;
-    private String Price;
-    private String Discount;
-    private String MenuId;
-
-    public Food() {
-
-    }
-
-    public Food(String name, String image, String description, String price, String discount, String menuId) {
-        Name = name;
-        Image = image;
-        Description = description;
-        Price = price;
-        Discount = discount;
-        MenuId = menuId;
-    }
+    private String name, image, description;
+    private Double price;
+    private boolean isSize, isAddon;
+    private int discount, id;
+    private Bitmap bitmapImage;
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getImage() {
-        return Image;
+        return image;
     }
 
     public void setImage(String image) {
-        Image = image;
+        this.image = image;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
-    public String getPrice() {
-        return Price;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setPrice(String price) {
-        Price = price;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
-    public String getDiscount() {
-        return Discount;
+    public boolean isSize() {
+        return isSize;
     }
 
-    public void setDiscount(String discount) {
-        Discount = discount;
+    public void setSize(boolean size) {
+        isSize = size;
     }
 
-    public String getMenuId() {
-        return MenuId;
+    public boolean isAddon() {
+        return isAddon;
     }
 
-    public void setMenuId(String menuId) {
-        MenuId = menuId;
+    public void setAddon(boolean addon) {
+        isAddon = addon;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public Bitmap getBitmapImage() {
+        return bitmapImage;
+    }
+
+    public void setBitmapImage(Bitmap bitmapImage) {
+        this.bitmapImage = bitmapImage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -77,7 +77,7 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
     }
 
     public void initStatus() {
-        int id = Common.convertStatusToIndex(Common.currentOrder.getOrderStatus());
+        int id = Common.currentOrder.getOrderStatus();
         updateCorlorStatus(id);
     }
     public void updateOrderStatus() {
@@ -135,9 +135,8 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
     }
 
     private void updateCorlorStatus(int id) {
-        id = Common.convertStatusToIndex(id);
         switch (id) {
-            case 3:
+            case -1:
                 ivCancelled.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivCancelled.setClickable(false);
             case 2:

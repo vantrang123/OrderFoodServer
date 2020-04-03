@@ -86,11 +86,6 @@ public class Common {
 
     }
 
-    public static int convertStatusToIndex(int orderStatus) {
-        if (orderStatus == -1) return 3;
-        else return orderStatus;
-    }
-
     public static void showNotification(Context context, int notiId, String title, String body, Intent intent) {
         PendingIntent pendingIntent = null;
         if (pendingIntent != null)

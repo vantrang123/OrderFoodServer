@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_root"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_marginTop="@dimen/dimens_10dp"
+    app:cardCornerRadius="10dp">
+
+    <ImageView
+        android:id="@+id/img_menu_image"
+        tools:text="@string/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        />
+
+    <ImageView
+        android:id="@+id/iv_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_effect_oval"
+        android:layout_gravity="right"
+        android:tint="@color/colorPrimary"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_more" />
+
+    <TextView
+        android:id="@+id/tv_menu_name"
+        tools:text="@string/app_name"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_txt_tranparent"
+        android:padding="@dimen/dimens_5dp"
+        android:layout_gravity="bottom|center"
+        android:gravity="center" />
+
+</androidx.cardview.widget.CardView>

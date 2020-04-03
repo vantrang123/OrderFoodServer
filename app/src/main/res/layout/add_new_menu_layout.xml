@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:hint="Food Menu Name"
             android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorOrange"
+            android:textColorHint="@color/colorAccent"
             android:textSize="24sp"/>
 
         <LinearLayout
@@ -38,7 +38,7 @@
                 android:text="Select"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textAllCaps="false"
-                android:background="@color/colorOrange"
+                android:background="@color/colorAccent"
                 android:layout_margin="8dp"
                 android:textColor="@android:color/white"/>
 
@@ -52,7 +52,7 @@
                 android:text="Upload"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textAllCaps="false"
-                android:background="@color/colorOrange"
+                android:background="@color/colorAccent"
                 android:layout_margin="8dp"
                 android:textColor="@android:color/white"/>
 

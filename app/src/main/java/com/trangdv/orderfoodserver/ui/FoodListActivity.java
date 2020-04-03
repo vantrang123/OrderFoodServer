@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,19 +32,39 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 import com.trangdv.orderfoodserver.R;
+import com.trangdv.orderfoodserver.adapter.FoodListAdapter;
 import com.trangdv.orderfoodserver.common.Common;
-import com.trangdv.orderfoodserver.listener.ItemClickListener;
 import com.trangdv.orderfoodserver.model.Food;
+import com.trangdv.orderfoodserver.model.FoodModel;
+import com.trangdv.orderfoodserver.model.eventbus.FoodListEvent;
+import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
+import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
+import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.viewholder.FoodViewHolder;
 
+import net.igenius.customcheckbox.CustomCheckBox;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class FoodListActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
+public class FoodListActivity extends AppCompatActivity implements FoodListAdapter.ItemListener {
+    IAnNgonAPI anNgonAPI;
+    CompositeDisposable compositeDisposable;
+    DialogUtils dialogUtils;
+    RecyclerView rvListFood;
+    FoodListAdapter foodListAdapter;
+    RecyclerView.LayoutManager layoutManager;
     RelativeLayout rootLayout;
 
     FloatingActionButton fab;
@@ -53,22 +75,24 @@ public class FoodListActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
 
-    String categoryId = "";
-
-    FirebaseRecyclerAdapter<Food, FoodViewHolder> adapter;
+    int menuId;
 
     //Add new food
-    EditText editName, editDescription, editPrice, editDiscount;
-    Button btnSelect, btnUpload;
+    private EditText editName, editDescription, editPrice, editDiscount;
+    private CustomCheckBox ckbNone, ckbSmall, ckbMedium, ckbLarge;
+    private TextView tvCancel, tvPost, tvTitle;
+    private ImageView ivSelect, ivBack;
+    private String isSize;
 
     Food newFood;
-
+    List<Food> foods = new ArrayList<>();
     Uri saveUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
+        findViewById();
 
         //Firebase
         db = FirebaseDatabase.getInstance();
@@ -76,14 +100,24 @@ public class FoodListActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        //Init
-        recyclerView = findViewById(R.id.recycler_food);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        init();
 
-        rootLayout = findViewById(R.id.root_Layout);
+    }
 
+    private void findViewById() {
+        ivBack = findViewById(R.id.iv_back);
+        rvListFood = findViewById(R.id.recycler_food);
         fab = findViewById(R.id.fab_foodList);
+        rootLayout = findViewById(R.id.root_Layout);
+        tvTitle = findViewById(R.id.tvTitle);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,73 +125,99 @@ public class FoodListActivity extends AppCompatActivity {
                 showAddFoodDialog();
             }
         });
+    }
 
-        if (getIntent() != null) {
-            categoryId = getIntent().getStringExtra("CategoryId");
-        }
-        if (!categoryId.isEmpty()) {
-            loadListFood(categoryId);
-        }
+    private void init() {
+        compositeDisposable = new CompositeDisposable();
+        anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
+        dialogUtils = new DialogUtils();
 
+        layoutManager = new LinearLayoutManager(this);
+        rvListFood.setLayoutManager(layoutManager);
+        foodListAdapter = new FoodListAdapter(FoodListActivity.this, foods, this);
+        rvListFood.setAdapter(foodListAdapter);
     }
 
     //showAddFoodDialog() method
     private void showAddFoodDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
-        alertDialog.setTitle("Add new Food");
-        alertDialog.setMessage("Please fill full information");
+        alertDialog.setTitle(getResources().getString(R.string.txt_title_add_new_food));
+        alertDialog.setMessage(getResources().getString(R.string.txt_content_add_new_menu));
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.add_new_food_layout, null);
+        View add_menu_layout = inflater.inflate(R.layout.layout_add_food, null);
 
-        editName = add_menu_layout.findViewById(R.id.edit_name_anf);
-        editDescription = add_menu_layout.findViewById(R.id.edit_description_anf);
-        editPrice = add_menu_layout.findViewById(R.id.edit_price_anf);
-        editDiscount = add_menu_layout.findViewById(R.id.edit_discount_anf);
+        editName = add_menu_layout.findViewById(R.id.edit_name);
+        editDescription = add_menu_layout.findViewById(R.id.edit_description);
+        editPrice = add_menu_layout.findViewById(R.id.edt_price);
+        editDiscount = add_menu_layout.findViewById(R.id.edt_discount);
+        ckbNone = add_menu_layout.findViewById(R.id.ckb_none);
+        ckbSmall = add_menu_layout.findViewById(R.id.ckb_small);
+        ckbMedium = add_menu_layout.findViewById(R.id.ckb_medium);
+        ckbLarge = add_menu_layout.findViewById(R.id.ckb_large);
 
-        btnSelect = add_menu_layout.findViewById(R.id.btn_select_anf);
-        btnUpload = add_menu_layout.findViewById(R.id.btn_upload_anf);
+        ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
+        tvPost = add_menu_layout.findViewById(R.id.tv_post);
+        tvCancel = add_menu_layout.findViewById(R.id.tv_cancel);
+
+        alertDialog.setView(add_menu_layout);
+        alertDialog.setIcon(R.drawable.ic_add_cart);
+        final AlertDialog dialog = alertDialog.show();
 
         //Event for button
-        btnSelect.setOnClickListener(new View.OnClickListener() {
+        ivSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseImage(); //Copy from HomeActivity
             }
         });
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+        tvPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage(); //Copy from HomeActivity
+                uploadImage(dialog); //Copy from HomeActivity
             }
         });
 
-        alertDialog.setView(add_menu_layout);
-        alertDialog.setIcon(R.drawable.ic_add_cart);
-
-        //setButton
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dialog.dismiss();
+            }
+        });
 
-                //Here just Create new Category
-                if (newFood != null) {
-                    foodList.push().setValue(newFood);
-                    Snackbar.make(rootLayout, "New Category " + newFood.getName() + " was added", Snackbar.LENGTH_SHORT).show();
+        ckbNone.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
+                if (isChecked) {
+                    isSize = "false";
                 }
             }
         });
-
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        ckbSmall.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
+                if (isChecked) {
+                    isSize = "true";
+                }
             }
         });
-
-        alertDialog.show();
+        ckbMedium.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
+                if (isChecked) {
+                    isSize = "true";
+                }
+            }
+        });
+        ckbLarge.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
+                if (isChecked) {
+                    isSize = "true";
+                }
+            }
+        });
     }
 
     //chooseImage() method
@@ -169,7 +229,7 @@ public class FoodListActivity extends AppCompatActivity {
     }
 
     //uploadImage() method
-    private void uploadImage() {
+    private void uploadImage(AlertDialog dialog) {
         if (saveUri != null) {
             final ProgressDialog mDialog = new ProgressDialog(this);
             mDialog.setMessage("Uploading...");
@@ -188,13 +248,14 @@ public class FoodListActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //set value for newCategory if image upload and we can get download link
-                                    newFood = new Food();
+                                    /*newFood = new Food();
                                     newFood.setName(editName.getText().toString());
                                     newFood.setDescription(editDescription.getText().toString());
                                     newFood.setPrice(editPrice.getText().toString());
                                     newFood.setDiscount(editDiscount.getText().toString());
                                     newFood.setMenuId(categoryId);
-                                    newFood.setImage(uri.toString());
+                                    newFood.setImage(uri.toString());*/
+                                    createFood(uri.toString(), dialog);
                                 }
                             });
                         }
@@ -216,7 +277,58 @@ public class FoodListActivity extends AppCompatActivity {
         }
     }
 
-    //loadListFood() method
+    private void createFood(String uri, AlertDialog dialog) {
+        compositeDisposable.add(anNgonAPI.createFood(Common.API_KEY,
+                editName.getText().toString(),
+                editDescription.getText().toString(),
+                uri,
+                Float.parseFloat(editPrice.getText().toString()),
+                isSize,
+                "false",
+                Integer.parseInt(editDiscount.getText().toString())
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(foodModel -> {
+                            if (foodModel.isSuccess()) {
+
+                                createMenuFood(foodModel, dialog);
+                            } else {
+                                Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+    }
+
+    private void createMenuFood(FoodModel foodModel, AlertDialog dialog) {
+        compositeDisposable.add(anNgonAPI.createMenuFood(Common.API_KEY,
+                menuId,
+                foodModel.getResult().get(0).getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(menuModel -> {
+                            if (menuModel.isSuccess()) {
+                                dialog.dismiss();
+                                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText(getResources().getString(R.string.txt_title_add_new_menu_success))
+                                        .setContentText(getResources().getString(R.string.txt_content_add_new_menu_success))
+                                        .show();
+                            } else {
+                                Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+    }
+
+    /*//loadListFood() method
     private void loadListFood(String categoryId) {
         adapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(
                 Food.class,
@@ -238,8 +350,8 @@ public class FoodListActivity extends AppCompatActivity {
             }
         };
         adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
-    }
+        rvListFood.setAdapter(adapter);
+    }*/
 
 
     @Override
@@ -250,7 +362,9 @@ public class FoodListActivity extends AppCompatActivity {
                 && data != null && data.getData() != null) {
 
             saveUri = data.getData();
-            btnSelect.setText("Img Selected");
+            Glide.with(this)
+                    .load(saveUri)
+                    .into(ivSelect);
         }
     }
 
@@ -262,11 +376,11 @@ public class FoodListActivity extends AppCompatActivity {
 
         if (item.getTitle().equals(Common.UPDATE)) {
             //update food
-            showUpdateFoodDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+//            showUpdateFoodDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
         }
         else if (item.getTitle().equals(Common.DELETE)) {
             //delete food
-            deleteFood(adapter.getRef(item.getOrder()).getKey());
+//            deleteFood(adapter.getRef(item.getOrder()).getKey());
         }
 
         return super.onContextItemSelected(item);
@@ -296,21 +410,21 @@ public class FoodListActivity extends AppCompatActivity {
         //Set default value for View
         editName.setText(item.getName());
         editDescription.setText(item.getDescription());
-        editPrice.setText(item.getPrice());
+
         editDiscount.setText(item.getDiscount());
 
-        btnSelect = add_menu_layout.findViewById(R.id.btn_select_anf);
-        btnUpload = add_menu_layout.findViewById(R.id.btn_upload_anf);
+        ivSelect = add_menu_layout.findViewById(R.id.btn_select_anf);
+        tvPost = add_menu_layout.findViewById(R.id.btn_upload_anf);
 
         //Event for button
-        btnSelect.setOnClickListener(new View.OnClickListener() {
+        ivSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseImage();
             }
         });
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+        tvPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeImage(item);
@@ -327,12 +441,7 @@ public class FoodListActivity extends AppCompatActivity {
                 dialog.dismiss();
 
                 //Update information
-                item.setName(editName.getText().toString());
-                item.setDescription(editDescription.getText().toString());
-                item.setPrice(editPrice.getText().toString());
-                item.setDiscount(editDiscount.getText().toString());
 
-                foodList.child(key).setValue(item);
 
                 Snackbar.make(rootLayout, "Category " + item.getName() + " edited Successfully", Snackbar.LENGTH_SHORT).show();
 
@@ -390,5 +499,65 @@ public class FoodListActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private void fetchData(int menuId) {
+        foods.clear();
+        compositeDisposable.add(anNgonAPI.getFoodOfMenu(Common.API_KEY, menuId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(foodModel -> {
+                            if (foodModel.isSuccess()) {
+                                foods.addAll(foodModel.getResult());
+                                foodListAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+    }
+
+    // listen EventBus
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void loadFoodListByCategory(FoodListEvent event) {
+        if (event.isSuccess()) {
+            tvTitle.setText(event.getCategory().getName());
+            fetchData(event.getCategory().getId());
+            menuId = event.getCategory().getId();
+        } else {
+
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
+
+    @Override
+    public void dispatchToFoodDetail(int position) {
+
+    }
+
+    @Override
+    public void dispatchToEditingFood(int position) {
+
     }
 }

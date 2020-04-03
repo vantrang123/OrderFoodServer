@@ -86,7 +86,7 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewHolder.tvOrderPhone.setText(new StringBuilder(orderList.get(position).getOrderPhone()));
             viewHolder.tvOrderPrice.setText(new StringBuilder(String.valueOf(orderList.get(position).getTotalPrice())));
             viewHolder.tvOrerDate.setText(new StringBuilder(simpleDateFormat.format(orderList.get(position).getOrderDate())));
-            viewHolder.tvOrderId.setText(new StringBuilder(String.valueOf(orderList.get(position).getOrderId())));
+            viewHolder.tvOrderId.setText(new StringBuilder("#").append(String.valueOf(orderList.get(position).getOrderId())));
             viewHolder.tvOrderStatus.setText(Common.convertCodeToStatus(orderList.get(position).getOrderStatus()));
 
             if (orderList.get(position).isCod()) {
