@@ -43,6 +43,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     private String phoneNumber;
     private String userName;
     private String password;
+    private String phoneFormat;
     private FirebaseAuth mAuth;
 
     ProgressBar progressBar;
@@ -67,9 +68,10 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             phoneNumber = bundle.getString("phoneNumber", "");
             userName = bundle.getString("userName", "");
             password = bundle.getString("password", "");
+            phoneFormat = bundle.getString("phoneFormat", "");
         }
 //        phoneNumber = getIntent().getStringExtra("phoneNumber");
-        sendVerificationCode(phoneNumber);
+        sendVerificationCode(phoneFormat);
 
         /*// save phone number
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("USER_PREF",
@@ -157,7 +159,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     anNgonAPI.updateRestaurantOwner(Common.API_KEY,
                             phoneNumber,
                             userName,
-                            firebaseUser.getUid())
+                            firebaseUser.getUid(),
+                            password)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(updateRestaurantOwnerModel -> {

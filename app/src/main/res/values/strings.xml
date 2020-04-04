@@ -78,10 +78,10 @@
     <string name="title_activity_tracking_order">Map</string>
     <string name="text_notification_order_to_shipper">You have new order need ship</string>
     <string name="txt_title_add_new_menu_success">Tạo menu thành công</string>
-    <string name="txt_content_add_new_menu_success">Bạn đã tạo một menu hãy tiếp tục thêm món ăn</string>
+    <string name="txt_content_add_new_menu_success">Bạn đã tạo mới một menu hãy tiếp tục thêm món ăn!</string>
     <string name="txt_title_add_new_menu">Thêm mới menu</string>
     <string name="txt_title_add_new_food">Thêm mới món</string>
-    <string name="txt_content_add_new_menu">Vui lòng điền đủ thông tin bên dưới</string>
+    <string name="txt_content_add_new_menu">Vui lòng điền đủ thông tin bên dưới!</string>
     <string name="txt_delete">Xóa</string>
 
 

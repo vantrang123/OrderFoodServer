@@ -31,7 +31,8 @@ public interface IAnNgonAPI {
     Observable<UpdateRestaurantOwnerModel> updateRestaurantOwner(@Field("key") String apiKey,
                                                                  @Field("userPhone") String userPhone,
                                                                  @Field("userName") String userName,
-                                                                 @Field("fbid") String fbid);
+                                                                 @Field("fbid") String fbid,
+                                                                 @Field("password") String password);
 
     @GET("orderbyrestaurant")
     Observable<OrderModel> getOrder(@Query("key") String apiKey,
@@ -108,6 +109,12 @@ public interface IAnNgonAPI {
     Observable<RestaurantMenuModel> createMenuFood(@Field("key") String apiKey,
                                                          @Field("menuId") int menuId,
                                                          @Field("foodId") int foodId);
+
+    @POST("foodsize")
+    @FormUrlEncoded
+    Observable<RestaurantMenuModel> createFoodSize(@Field("key") String apiKey,
+                                                   @Field("foodId") int foodId,
+                                                   @Field("sizeId") int sizeId);
 
     /*@DELETE("favorite")
     Observable<FavoriteModel> removeFavorite(@Query("key") String apiKey,

@@ -4,21 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
 import com.trangdv.orderfoodserver.R;
-import com.trangdv.orderfoodserver.model.User;
 
 public class SignupActivity extends AppCompatActivity {
     private EditText edt_username;
@@ -28,7 +22,7 @@ public class SignupActivity extends AppCompatActivity {
     private CountryCodePicker countryCodePicker;
 
     private String name;
-    private String phonenumber;
+    private String phoneNumber;
     private String password;
     private String code;
 
@@ -41,8 +35,6 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         inits();
-
-
     }
 
     private void inits() {
@@ -60,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getTextfromEdt();
-                if (name.equals("")==false && phonenumber.equals("")==false && password.equals("")==false) {
+                if (name.equals("")==false && phoneNumber.equals("")==false && password.equals("")==false) {
 //                    createUser();
                     gotoVerification();
                 }
@@ -69,13 +61,14 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void gotoVerification() {
-        String phoneNumber = "+" + code + phonenumber;
+        String phoneFormat = "+" + code + phoneNumber;
 
         Intent intent = new Intent(SignupActivity.this, VerifyPhoneActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("phoneNumber", phoneNumber);
         bundle.putString("userName", name);
         bundle.putString("password", password);
+        bundle.putString("phoneFormat", phoneFormat);
         intent.putExtras(bundle);
 //        intent.putExtra("phoneNumber", phoneNumber);
         startActivity(intent);
@@ -111,7 +104,7 @@ public class SignupActivity extends AppCompatActivity {
 */
 
     private void getTextfromEdt() {
-        phonenumber = edt_phonenumber.getText().toString();
+        phoneNumber = edt_phonenumber.getText().toString();
         password = edt_password.getText().toString();
         name = edt_username.getText().toString();
         code = countryCodePicker.getSelectedCountryCode().trim();
@@ -122,7 +115,7 @@ public class SignupActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(LoginActivity.KEY_PHONENUMBER, phonenumber);
+        bundle.putString(LoginActivity.KEY_PHONENUMBER, phoneNumber);
         bundle.putString(LoginActivity.KEY_PASSWORD, password);
         intent.putExtras(bundle);
 

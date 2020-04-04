@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -64,7 +65,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
     DialogUtils dialogUtils;
     RecyclerView rvListFood;
     FoodListAdapter foodListAdapter;
-    RecyclerView.LayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
     RelativeLayout rootLayout;
 
     FloatingActionButton fab;
@@ -83,6 +84,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
     private TextView tvCancel, tvPost, tvTitle;
     private ImageView ivSelect, ivBack;
     private String isSize;
+    private SwipeRefreshLayout swrFood;
 
     Food newFood;
     List<Food> foods = new ArrayList<>();
@@ -110,6 +112,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         fab = findViewById(R.id.fab_foodList);
         rootLayout = findViewById(R.id.root_Layout);
         tvTitle = findViewById(R.id.tvTitle);
+        swrFood = findViewById(R.id.swr_food);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +124,19 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FoodListActivity.this, "FoodList" + this.getClass().getName(), Toast.LENGTH_SHORT).show();
                 showAddFoodDialog();
+            }
+        });
+
+        swrFood.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+        swrFood.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchData(menuId);
             }
         });
     }
@@ -133,6 +147,8 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         dialogUtils = new DialogUtils();
 
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         rvListFood.setLayoutManager(layoutManager);
         foodListAdapter = new FoodListAdapter(FoodListActivity.this, foods, this);
         rvListFood.setAdapter(foodListAdapter);
@@ -190,7 +206,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
                 if (isChecked) {
-                    isSize = "false";
                 }
             }
         });
@@ -198,7 +213,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
                 if (isChecked) {
-                    isSize = "true";
                 }
             }
         });
@@ -206,7 +220,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
                 if (isChecked) {
-                    isSize = "true";
                 }
             }
         });
@@ -214,7 +227,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
             @Override
             public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
                 if (isChecked) {
-                    isSize = "true";
                 }
             }
         });
@@ -243,18 +255,9 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodListActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    //set value for newCategory if image upload and we can get download link
-                                    /*newFood = new Food();
-                                    newFood.setName(editName.getText().toString());
-                                    newFood.setDescription(editDescription.getText().toString());
-                                    newFood.setPrice(editPrice.getText().toString());
-                                    newFood.setDiscount(editDiscount.getText().toString());
-                                    newFood.setMenuId(categoryId);
-                                    newFood.setImage(uri.toString());*/
                                     createFood(uri.toString(), dialog);
                                 }
                             });
@@ -278,6 +281,9 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
     }
 
     private void createFood(String uri, AlertDialog dialog) {
+        if (ckbNone.isChecked())
+            isSize = "false";
+        else isSize = "true";
         compositeDisposable.add(anNgonAPI.createFood(Common.API_KEY,
                 editName.getText().toString(),
                 editDescription.getText().toString(),
@@ -286,15 +292,46 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                 isSize,
                 "false",
                 Integer.parseInt(editDiscount.getText().toString())
-                )
+        )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(foodModel -> {
                             if (foodModel.isSuccess()) {
-
+                                if (!ckbNone.isChecked())
+                                    createFoodSize(foodModel);
                                 createMenuFood(foodModel, dialog);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+    }
+
+    private void createFoodSize(FoodModel foodModel) {
+        int foodId = foodModel.getResult().get(0).getId();
+        if (ckbSmall.isChecked())
+            createFoodSize(foodId, 1);
+        if (ckbMedium.isChecked())
+            createFoodSize(foodId, 2);
+        if (ckbLarge.isChecked())
+            createFoodSize(foodId, 3);
+    }
+
+    private void createFoodSize(int foodId, int sizeId) {
+        compositeDisposable.add(anNgonAPI.createFoodSize(Common.API_KEY,
+                foodId,
+                sizeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(menuModel -> {
+                            if (menuModel.isSuccess()) {
+                                //Todo
+                            } else {
+                                Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
                         },
@@ -317,6 +354,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                                         .setTitleText(getResources().getString(R.string.txt_title_add_new_menu_success))
                                         .setContentText(getResources().getString(R.string.txt_content_add_new_menu_success))
                                         .show();
+                                fetchData(menuId);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -377,8 +415,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         if (item.getTitle().equals(Common.UPDATE)) {
             //update food
 //            showUpdateFoodDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
-        }
-        else if (item.getTitle().equals(Common.DELETE)) {
+        } else if (item.getTitle().equals(Common.DELETE)) {
             //delete food
 //            deleteFood(adapter.getRef(item.getOrder()).getKey());
         }
@@ -510,6 +547,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                             if (foodModel.isSuccess()) {
                                 foods.addAll(foodModel.getResult());
                                 foodListAdapter.notifyDataSetChanged();
+                                swrFood.setRefreshing(false);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +56,7 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
 
     OrderAdapter orderAdapter;
     RecyclerView rvListOrder;
+    private ImageView ivBack;
     RecyclerView.LayoutManager layoutManager;
     SwipeRefreshLayout refreshLayout;
     MaterialSpinner spinner, shipperSpinner;
@@ -90,6 +93,14 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void run() {
                 loadMaxOrder();
+            }
+        });
+
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
@@ -153,6 +164,7 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
     private void findViewById() {
         refreshLayout = findViewById(R.id.swr_order);
         rvListOrder = findViewById(R.id.listOrders);
+        ivBack = findViewById(R.id.iv_back);
     }
 
     private void initView() {

@@ -34,8 +34,8 @@
             >
 
             <ImageView android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@drawable/button_effect_oval"
                 android:tint="@color/colorWhite"
                 android:layout_marginLeft="5dp"
@@ -60,13 +60,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_food"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swr_food"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/container"
-        android:paddingHorizontal="16dp"
-        android:scrollbars="vertical"/>
+        android:layout_below="@id/container">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_food"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_foodList"
@@ -75,7 +81,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end|right"
-        android:layout_margin="8dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="0dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="26dp"
         app:srcCompat="@drawable/ic_add_list" />
 
 </RelativeLayout>

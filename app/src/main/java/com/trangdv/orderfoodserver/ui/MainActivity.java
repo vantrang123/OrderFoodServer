@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -94,11 +95,12 @@ public class MainActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     RecyclerView rvMenu;
-    RecyclerView.LayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
     Toolbar toolbar;
     private TextView txtUserName, tvUserPhone, tvPost, tvCancel;
     private EditText editName, edtDescription;
     private ImageView ivSelect;
+    private SwipeRefreshLayout swrMenu;
 
     Uri saveUri;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
@@ -149,13 +151,14 @@ public class MainActivity extends AppCompatActivity
 
         init();
         refreshToke();
-        loadMenu();
+
         subscribeToTopic(Common.getTopicChannel(Common.currentRestaurantOwner.getRestaurantId()));
     }
 
     private void findViewById() {
         rvMenu = findViewById(R.id.recycler_menu);
         toolbar = findViewById(R.id.toolbar);
+        swrMenu = findViewById(R.id.swr_menu);
     }
 
     private void refreshToke() {
@@ -180,6 +183,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadMenu() {
+        categoryList.clear();
         compositeDisposable.add(
                 anNgonAPI.getCategories(Common.API_KEY, Common.currentRestaurantOwner.getRestaurantId())
                         .subscribeOn(Schedulers.io())
@@ -188,6 +192,7 @@ public class MainActivity extends AppCompatActivity
                             categoryList.clear();
                             categoryList.addAll(menuModel.getResult());
                             menuAdapter.notifyDataSetChanged();
+                            swrMenu.setRefreshing(false);
                         }, throwable -> {
                             Toast.makeText(this, "[GET CATEGORY]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         })
@@ -203,12 +208,32 @@ public class MainActivity extends AppCompatActivity
         anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
         compositeDisposable = new CompositeDisposable();
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         rvMenu.setLayoutManager(layoutManager);
         menuAdapter = new MenuAdapter(this, categoryList, this);
         rvMenu.setAdapter(menuAdapter);
 
         anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
         dialogUtils = new DialogUtils();
+
+        swrMenu.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+        swrMenu.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadMenu();
+            }
+        });
+        swrMenu.post(new Runnable() {
+            @Override
+            public void run() {
+                loadMenu();
+            }
+        });
     }
 
     private void subscribeToTopic(String topicChannel) {
@@ -362,8 +387,7 @@ public class MainActivity extends AppCompatActivity
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
-                                categoryList.add(menuModel.getResult().get(0));
-                                menuAdapter.notifyItemInserted(categoryList.size());
+                                loadMenu();
                                 createRestaurantMenu(menuModel.getResult().get(0).getId(), dialog);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
@@ -593,7 +617,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        dialogUtils.dismissProgress();
         super.onPause();
     }
 
