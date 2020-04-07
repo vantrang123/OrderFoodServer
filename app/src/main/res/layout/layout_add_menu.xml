@@ -83,7 +83,7 @@
         android:layout_marginTop="@dimen/dimens_10dp"
         android:textColor="@color/colorWhite"
         android:layout_marginBottom="@dimen/dimens_10dp"
-        android:background="@drawable/bg_button"
+        android:background="@drawable/bg_button_grey"
         app:layout_constraintTop_toBottomOf="@id/iv_select_image"
         app:layout_constraintLeft_toLeftOf="@id/edit_name"
         app:layout_constraintRight_toLeftOf="@id/tv_post"/>

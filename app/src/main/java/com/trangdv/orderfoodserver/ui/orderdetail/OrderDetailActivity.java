@@ -25,7 +25,9 @@ import com.trangdv.orderfoodserver.utils.DialogUtils;
 
 import java.util.Date;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class OrderDetailActivity extends AppCompatActivity implements OrderItemAdapter.ItemListener, View.OnClickListener {
     IAnNgonAPI anNgonAPI;
@@ -37,12 +39,18 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
     private SwipeRefreshLayout refreshLayout;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    public int status = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            status = bundle.getInt("Status", 0);
+        }
         findViewById();
         init();
         initView();
@@ -59,6 +67,7 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
 
             }
         });
+
     }
 
     private void initView() {

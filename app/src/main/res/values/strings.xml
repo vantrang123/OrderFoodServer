@@ -52,11 +52,15 @@
     <string name="txt_order_detail">Chi tiết đơn hàng</string>
     <string name="txt_order_list">Danh sách đơn hàng</string>
     <string name="txt_order_placed">Đã đặt hàng</string>
+    <string name="txt_accept_order">Chấp nhận đơn hàng</string>
     <string name="txt_shipping">Đang giao</string>
+    <string name="txt_find_shipper">Nhận giao hàng</string>
     <string name="txt_shipped">Đã giao</string>
+    <string name="txt_accept_shipper">Chọn người giao</string>
+    <string name="txt_choise_shipper">Chọn người giao</string>
     <string name="txt_place_order">Đặt món</string>
     <string name="txt_order">Đặt hàng</string>
-    <string name="txt_cancelled">Đã hủy</string>
+    <string name="txt_cancelled">Hủy</string>
     <string name="txt_cancell">Hủy</string>
     <string name="txt_post">Đăng</string>
     <string name="txt_update">Cập nhật</string>
@@ -81,7 +85,9 @@
     <string name="txt_content_add_new_menu_success">Bạn đã tạo mới một menu hãy tiếp tục thêm món ăn!</string>
     <string name="txt_title_add_new_menu">Thêm mới menu</string>
     <string name="txt_title_add_new_food">Thêm mới món</string>
+    <string name="txt_title_choise_shipper">Chọn người giao</string>
     <string name="txt_content_add_new_menu">Vui lòng điền đủ thông tin bên dưới!</string>
+    <string name="txt_content_choise_shipper">Chọn một người trong danh sách bên dưới!</string>
     <string name="txt_delete">Xóa</string>
 
 

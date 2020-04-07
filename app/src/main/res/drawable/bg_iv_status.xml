@@ -7,10 +7,10 @@
         android:startColor="#E91E63"
         android:type="linear"/>
     <padding
-        android:left="15dp"
-        android:top="15dp"
-        android:right="15dp"
-        android:bottom="15dp"
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp"
         />
 
 </shape>

@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar_header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_55"
+        android:layout_height="50dp"
         android:background="@drawable/bg_header"
         android:gravity="center|start"
         android:orientation="horizontal"
@@ -27,8 +27,8 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="5dp"
             android:background="@drawable/button_effect_oval"
             android:src="@drawable/ic_back"

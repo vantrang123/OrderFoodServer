@@ -2,9 +2,9 @@
     android:shape="oval">
     <solid android:color="@color/grey_40" />
     <padding
-        android:bottom="15dp"
-        android:left="15dp"
-        android:right="15dp"
-        android:top="15dp" />
+        android:bottom="8dp"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp" />
 
 </shape>

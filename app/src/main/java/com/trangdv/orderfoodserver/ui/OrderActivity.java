@@ -31,7 +31,6 @@ import com.trangdv.orderfoodserver.model.Request;
 //import com.trangdv.orderfoodserver.remote.APIService;
 import com.trangdv.orderfoodserver.model.Sender;
 import com.trangdv.orderfoodserver.model.Token;
-import com.trangdv.orderfoodserver.remote.IFCMService;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.ui.orderdetail.OrderDetailActivity;
@@ -65,6 +64,7 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
     private int maxData = 0;
     private boolean isLoading = false;
     private int idItemSelected;
+    public int status = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +103,21 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
                 onBackPressed();
             }
         });
+    }
+
+    private void findViewById() {
+        refreshLayout = findViewById(R.id.swr_order);
+        rvListOrder = findViewById(R.id.listOrders);
+        ivBack = findViewById(R.id.iv_back);
+    }
+
+    private void initView() {
+        layoutManager = new LinearLayoutManager(this);
+        rvListOrder.setLayoutManager(layoutManager);
+        refreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
     }
 
     private void loadMaxOrder() {
@@ -161,19 +176,25 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
                 ));
     }
 
-    private void findViewById() {
-        refreshLayout = findViewById(R.id.swr_order);
-        rvListOrder = findViewById(R.id.listOrders);
-        ivBack = findViewById(R.id.iv_back);
-    }
+    public void getShippingOrder(int restaurantId, int orderId) {
+        compositeDisposable.add(
+                anNgonAPI.getShipperRequestShip(Common.API_KEY, restaurantId, orderId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(shipperModel -> {
+                                    if (shipperModel.isSuccess()) {
+                                        if (shipperModel.getResult().size() > 0) {
+                                            status = 2;
+                                            gotoOrderDetail();
+                                        }
+                                    } else {
 
-    private void initView() {
-        layoutManager = new LinearLayoutManager(this);
-        rvListOrder.setLayoutManager(layoutManager);
-        refreshLayout.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
+                                    }
+                                },
+                                throwable -> {
+
+                                })
+        );
     }
 
     @Override
@@ -415,8 +436,17 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void dispatchToOrderDetail(int position) {
         dialogUtils.showProgress(this);
+        Common.currentOrder = orderList.get(position);
+        getShippingOrder(Common.currentOrder.getRestaurantId(), Common.currentOrder.getOrderId());
         idItemSelected = position;
-        startActivityForResult(new Intent(this, OrderDetailActivity.class), REQUEST_CODE_ORDER_DETAIL);
+    }
+
+    private void gotoOrderDetail() {
+        Intent intent = new Intent(this, OrderDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("Status", status);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_CODE_ORDER_DETAIL);
     }
 
 }

@@ -8,6 +8,8 @@ import com.trangdv.orderfoodserver.model.OrderDetailModel;
 import com.trangdv.orderfoodserver.model.OrderModel;
 import com.trangdv.orderfoodserver.model.RestaurantMenuModel;
 import com.trangdv.orderfoodserver.model.RestaurantOwnerModel;
+import com.trangdv.orderfoodserver.model.ShipperModel;
+import com.trangdv.orderfoodserver.model.ShippingOrderModel;
 import com.trangdv.orderfoodserver.model.TokenModel;
 import com.trangdv.orderfoodserver.model.UpdateOrderModel;
 import com.trangdv.orderfoodserver.model.UpdateRestaurantOwnerModel;
@@ -107,14 +109,27 @@ public interface IAnNgonAPI {
     @POST("menufood")
     @FormUrlEncoded
     Observable<RestaurantMenuModel> createMenuFood(@Field("key") String apiKey,
-                                                         @Field("menuId") int menuId,
-                                                         @Field("foodId") int foodId);
+                                                   @Field("menuId") int menuId,
+                                                   @Field("foodId") int foodId);
 
     @POST("foodsize")
     @FormUrlEncoded
     Observable<RestaurantMenuModel> createFoodSize(@Field("key") String apiKey,
                                                    @Field("foodId") int foodId,
                                                    @Field("sizeId") int sizeId);
+
+    @GET("shipperrequestship")
+    Observable<ShipperModel> getShipperRequestShip(@Query("key") String apiKey,
+                                                   @Query("restaurantId") int restaurantId,
+                                                   @Query("orderId") int orderId);
+
+    @POST("shippingorder")
+    @FormUrlEncoded
+    Observable<ShippingOrderModel> setShippingOrder(@Field("key") String apiKey,
+                                                    @Field("orderId") int orderId,
+                                                    @Field("restaurantId") int restaurantId,
+                                                    @Field("shipperId") String shipperId,
+                                                    @Field("status") int status);
 
     /*@DELETE("favorite")
     Observable<FavoriteModel> removeFavorite(@Query("key") String apiKey,
