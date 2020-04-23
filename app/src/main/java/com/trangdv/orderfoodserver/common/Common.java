@@ -54,7 +54,7 @@ public class Common {
             case 0:
                 return "Placed";
             case 1:
-                return "Shipping";
+                return "Chấp nhận đơn hàng";
             case 2:
                 return "Shipped";
             case -1:

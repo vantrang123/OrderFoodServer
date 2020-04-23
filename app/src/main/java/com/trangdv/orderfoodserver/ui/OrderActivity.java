@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ import com.trangdv.orderfoodserver.model.Order;
 import com.trangdv.orderfoodserver.model.Request;
 //import com.trangdv.orderfoodserver.remote.APIService;
 import com.trangdv.orderfoodserver.model.Sender;
+import com.trangdv.orderfoodserver.model.ShipperOrder;
 import com.trangdv.orderfoodserver.model.Token;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
@@ -178,108 +180,34 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
 
     public void getShippingOrder(int restaurantId, int orderId) {
         compositeDisposable.add(
-                anNgonAPI.getShipperRequestShip(Common.API_KEY, restaurantId, orderId)
+                anNgonAPI.getShippingOrder(Common.API_KEY, restaurantId, orderId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(shipperModel -> {
-                                    if (shipperModel.isSuccess()) {
-                                        if (shipperModel.getResult().size() > 0) {
-                                            status = 2;
+                        .subscribe(shippingOrderModel -> {
+                                    if (shippingOrderModel.isSuccess()) {
+                                        if (shippingOrderModel.getResult().size() > 0) {
+                                            for (ShipperOrder shipperOrder : shippingOrderModel.getResult()) {
+                                                if (shipperOrder.getShippingStatus() > status) {
+                                                    status = shipperOrder.getShippingStatus();
+                                                }
+                                            }
+                                            gotoOrderDetail();
+                                        }
+                                        else {
+                                            status  = 0;
                                             gotoOrderDetail();
                                         }
                                     } else {
-
+                                        dialogUtils.dismissProgress();
+                                        status  = 0;
+                                        gotoOrderDetail();
                                     }
                                 },
                                 throwable -> {
-
+                                    dialogUtils.dismissProgress();
+                                    Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 })
         );
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle().equals(Common.UPDATE)) {
-//            showUpdateDialog(adpter.getRef(item.getOrder()).getKey(), adpter.getItem(item.getOrder()));
-        } else if (item.getTitle().equals(Common.DELETE)) {
-//            deleteOrder(adpter.getRef(item.getOrder()).getKey());
-        }
-        return super.onContextItemSelected(item);
-    }
-
-    private void showUpdateDialog(String key, final Request item) {
-
-        /*final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
-        alertDialog.setTitle("Update Order");
-        alertDialog.setMessage("Please Choose Status");
-
-        final LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.update_order_layout, null);
-
-        spinner = (MaterialSpinner) view.findViewById(R.id.statusSpinner);
-        spinner.setItems("Placed", "Preparing Orders", "Shipping", "Delivered");
-
-        shipperSpinner = (MaterialSpinner) view.findViewById(R.id.shipperSpinner);
-
-        //load all shipper to spinner
-        final List<String> shipperList = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference(Common.SHIPPER_TABLE)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot shipperSnapshot : dataSnapshot.getChildren())
-                            shipperList.add(shipperSnapshot.getKey());
-                        shipperSpinner.setItems(shipperList);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-        alertDialog.setView(view);
-
-        //final String localKey = key;
-        globalKey = key;
-        iRequest = item;
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.dismiss();
-                item.setStatus(String.valueOf(spinner.getSelectedIndex()));
-                item.getLatitude();
-                item.getLongitude();
-                if (item.getStatus().equals("2")) {
-                    sendOrderShipRequestToShipper(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString(), item);
-
-                } else {
-                    request.child(globalKey).setValue(item);
-                    adpter.notifyDataSetChanged(); //add to update item size
-
-                    sendOrderStatusToUser(globalKey, item);
-                }
-
-            }
-        });
-
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.dismiss();
-
-            }
-        });
-
-        alertDialog.show();*/
-
-    }
-
-    //
-    private void deleteOrder(String key) {
-
     }
 
     @Override

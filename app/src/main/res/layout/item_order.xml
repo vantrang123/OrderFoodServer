@@ -11,7 +11,8 @@
     android:elevation="@dimen/dimens_5dp"
     android:paddingLeft="@dimen/dimens_10dp"
     android:paddingRight="@dimen/dimens_10dp"
-    android:paddingBottom="@dimen/dimens_5dp">
+    android:paddingBottom="@dimen/dimens_5dp"
+    android:foreground="?selectableItemBackgroundBorderless">
 
     <TextView
         android:id="@+id/tv_order_id"

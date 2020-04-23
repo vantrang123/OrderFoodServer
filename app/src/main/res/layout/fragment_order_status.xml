@@ -30,16 +30,27 @@
 
     <include
         android:id="@+id/line1"
-        layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        layout="@layout/layout_horizontal_line_gray"
+        android:layout_width="2dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/iv_find_shipper"
+        app:layout_constraintBottom_toTopOf="@id/iv_choise_shipper"
+        app:layout_constraintLeft_toLeftOf="@id/iv_accept_order"
+        app:layout_constraintRight_toRightOf="@id/iv_accept_order"
+        app:layout_constraintTop_toBottomOf="@id/iv_accept_order" />
+
+    <include
+        android:id="@+id/line1gradient"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/iv_choise_shipper"
         app:layout_constraintLeft_toLeftOf="@id/iv_accept_order"
         app:layout_constraintRight_toRightOf="@id/iv_accept_order"
         app:layout_constraintTop_toBottomOf="@id/iv_accept_order" />
 
     <ImageView
-        android:id="@+id/iv_find_shipper"
+        android:id="@+id/iv_choise_shipper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_iv_status_grey"
@@ -53,29 +64,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimens_20dp"
-        android:text="@string/txt_find_shipper"
+        android:text="@string/txt_choise_shipper"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_find_shipper"
-        app:layout_constraintLeft_toRightOf="@id/iv_find_shipper"
-        app:layout_constraintTop_toTopOf="@id/iv_find_shipper" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_choise_shipper"
+        app:layout_constraintLeft_toRightOf="@id/iv_choise_shipper"
+        app:layout_constraintTop_toTopOf="@id/iv_choise_shipper" />
 
     <include
         android:id="@+id/line2"
-        layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        layout="@layout/layout_horizontal_line_gray"
+        android:layout_width="2dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/iv_accept_shipper"
-        app:layout_constraintLeft_toLeftOf="@id/iv_find_shipper"
-        app:layout_constraintRight_toRightOf="@id/iv_find_shipper"
-        app:layout_constraintTop_toBottomOf="@id/iv_find_shipper" />
+        app:layout_constraintBottom_toTopOf="@id/iv_shipping"
+        app:layout_constraintLeft_toLeftOf="@id/iv_choise_shipper"
+        app:layout_constraintRight_toRightOf="@id/iv_choise_shipper"
+        app:layout_constraintTop_toBottomOf="@id/iv_choise_shipper" />
+
+    <include
+        android:id="@+id/line2gradient"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/iv_shipping"
+        app:layout_constraintLeft_toLeftOf="@id/iv_choise_shipper"
+        app:layout_constraintRight_toRightOf="@id/iv_choise_shipper"
+        app:layout_constraintTop_toBottomOf="@id/iv_choise_shipper" />
 
     <ImageView
-        android:id="@+id/iv_accept_shipper"
+        android:id="@+id/iv_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_iv_status_grey"
-        android:src="@drawable/ic_accept_shipper"
+        android:src="@drawable/ic_shipping"
         android:tint="@color/colorWhite"
         app:layout_constraintBottom_toTopOf="@id/line3"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -85,22 +107,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimens_20dp"
-        android:text="@string/txt_choise_shipper"
+        android:text="@string/txt_shipping"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_accept_shipper"
-        app:layout_constraintLeft_toRightOf="@id/iv_accept_shipper"
-        app:layout_constraintTop_toTopOf="@id/iv_accept_shipper" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_shipping"
+        app:layout_constraintLeft_toRightOf="@id/iv_shipping"
+        app:layout_constraintTop_toTopOf="@id/iv_shipping" />
 
     <include
         android:id="@+id/line3"
-        layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        layout="@layout/layout_horizontal_line_gray"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/iv_shipped"
-        app:layout_constraintLeft_toLeftOf="@id/iv_accept_shipper"
-        app:layout_constraintRight_toRightOf="@id/iv_accept_shipper"
-        app:layout_constraintTop_toBottomOf="@id/iv_accept_shipper" />
+        app:layout_constraintLeft_toLeftOf="@id/iv_shipping"
+        app:layout_constraintRight_toRightOf="@id/iv_shipping"
+        app:layout_constraintTop_toBottomOf="@id/iv_shipping" />
+
+    <include
+        android:id="@+id/line3gradient"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/iv_shipped"
+        app:layout_constraintLeft_toLeftOf="@id/iv_shipping"
+        app:layout_constraintRight_toRightOf="@id/iv_shipping"
+        app:layout_constraintTop_toBottomOf="@id/iv_shipping" />
 
     <ImageView
         android:id="@+id/iv_shipped"
@@ -126,9 +159,20 @@
 
     <include
         android:id="@+id/line4"
-        layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        layout="@layout/layout_horizontal_line_gray"
+        android:layout_width="2dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_cancelled"
+        app:layout_constraintLeft_toLeftOf="@id/iv_shipped"
+        app:layout_constraintRight_toRightOf="@id/iv_shipped"
+        app:layout_constraintTop_toBottomOf="@id/iv_shipped" />
+
+    <include
+        android:id="@+id/line4gradient"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/iv_cancelled"
         app:layout_constraintLeft_toLeftOf="@id/iv_shipped"
         app:layout_constraintRight_toRightOf="@id/iv_shipped"

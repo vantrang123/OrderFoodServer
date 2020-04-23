@@ -123,13 +123,23 @@ public interface IAnNgonAPI {
                                                    @Query("restaurantId") int restaurantId,
                                                    @Query("orderId") int orderId);
 
+    @GET("shippingorder")
+    Observable<ShippingOrderModel> getShippingOrder(@Query("key") String apiKey,
+                                                   @Query("restaurantId") int restaurantId,
+                                                   @Query("orderId") int orderId);
+
     @POST("shippingorder")
     @FormUrlEncoded
     Observable<ShippingOrderModel> setShippingOrder(@Field("key") String apiKey,
                                                     @Field("orderId") int orderId,
                                                     @Field("restaurantId") int restaurantId,
                                                     @Field("shipperId") String shipperId,
-                                                    @Field("status") int status);
+                                                    @Field("status") int status,
+                                                    @Field("orderFBID") String orderFBID);
+
+    @GET("orderneedship")
+    Observable<OrderModel> getOrderNeedShip(@Query("key") String apiKey,
+                                            @Query("restaurantId") int restaurantId);
 
     /*@DELETE("favorite")
     Observable<FavoriteModel> removeFavorite(@Query("key") String apiKey,

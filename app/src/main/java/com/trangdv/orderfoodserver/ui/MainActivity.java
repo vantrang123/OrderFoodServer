@@ -1,7 +1,6 @@
 package com.trangdv.orderfoodserver.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,18 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,22 +27,14 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -55,17 +42,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.gson.internal.$Gson$Preconditions;
-import com.squareup.picasso.Picasso;
 import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.adapter.MenuAdapter;
 import com.trangdv.orderfoodserver.common.Common;
-import com.trangdv.orderfoodserver.listener.ItemClickListener;
 import com.trangdv.orderfoodserver.model.Category;
 import com.trangdv.orderfoodserver.model.RestaurantOwner;
 import com.trangdv.orderfoodserver.model.eventbus.FoodListEvent;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
+import com.trangdv.orderfoodserver.ui.dialog.AddMenuDialog;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 import com.trangdv.orderfoodserver.viewholder.MenuViewHolder;
@@ -97,10 +82,12 @@ public class MainActivity extends AppCompatActivity
     RecyclerView rvMenu;
     LinearLayoutManager layoutManager;
     Toolbar toolbar;
+    AddMenuDialog addMenuDialog;
     private TextView txtUserName, tvUserPhone, tvPost, tvCancel;
     private EditText editName, edtDescription;
     private ImageView ivSelect;
     private SwipeRefreshLayout swrMenu;
+    private FloatingActionButton fabAddMenu;
 
     Uri saveUri;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
@@ -116,21 +103,9 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle("Menu Management");
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fabAdd = findViewById(R.id.fab_add_menu);
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddMenuDialog();
-            }
-        });
-        /*FloatingActionButton fabEdit = findViewById(R.id.fab_edit_menu);
-        fabEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showUpdateDialog(menuAdapter.);
-            }
-        });*/
-        //
+        // event click
+        eventClick();
+
         fragmentManager = getSupportFragmentManager();
         DrawerLayout drawer = findViewById(R.id.drawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -155,10 +130,20 @@ public class MainActivity extends AppCompatActivity
         subscribeToTopic(Common.getTopicChannel(Common.currentRestaurantOwner.getRestaurantId()));
     }
 
+    private void eventClick() {
+        fabAddMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddMenuDialog();
+            }
+        });
+    }
+
     private void findViewById() {
         rvMenu = findViewById(R.id.recycler_menu);
         toolbar = findViewById(R.id.toolbar);
         swrMenu = findViewById(R.id.swr_menu);
+        fabAddMenu = findViewById(R.id.fab_add_menu);
     }
 
     private void refreshToke() {
@@ -194,6 +179,7 @@ public class MainActivity extends AppCompatActivity
                             menuAdapter.notifyDataSetChanged();
                             swrMenu.setRefreshing(false);
                         }, throwable -> {
+                            swrMenu.setRefreshing(false);
                             Toast.makeText(this, "[GET CATEGORY]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         })
         );
@@ -218,9 +204,7 @@ public class MainActivity extends AppCompatActivity
         dialogUtils = new DialogUtils();
 
         swrMenu.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
+                android.R.color.holo_orange_dark);
 
         swrMenu.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -234,6 +218,8 @@ public class MainActivity extends AppCompatActivity
                 loadMenu();
             }
         });
+
+        addMenuDialog = new AddMenuDialog();
     }
 
     private void subscribeToTopic(String topicChannel) {
@@ -272,21 +258,24 @@ public class MainActivity extends AppCompatActivity
 
         //Just copy & past showDialog() and modify
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle("Update Category");
+        alertDialog.setTitle("Cập nhật Menu");
         alertDialog.setMessage("Please fill full information");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.layout_add_menu, null);
+        View add_menu_layout = inflater.inflate(R.layout.layout_update_menu, null);
 
-        editName = add_menu_layout.findViewById(R.id.edit_name);
-        edtDescription = add_menu_layout.findViewById(R.id.edit_description);
-        ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
+        editName = add_menu_layout.findViewById(R.id.edt_name);
+        edtDescription = add_menu_layout.findViewById(R.id.edt_description);
         tvPost = add_menu_layout.findViewById(R.id.tv_post);
         tvCancel = add_menu_layout.findViewById(R.id.tv_cancel);
+        ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
 
         //set default name and description
         editName.setText(item.getName());
         edtDescription.setText(item.getDescription());
+        Glide.with(this)
+                .load(item.getImage())
+                .into(ivSelect);
 
         //Event for button
         ivSelect.setOnClickListener(new View.OnClickListener() {
@@ -314,7 +303,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void chooseImage() {
+    public void chooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -327,9 +316,14 @@ public class MainActivity extends AppCompatActivity
                 && data != null && data.getData() != null) {
             saveUri = data.getData();
 
-            Glide.with(this)
+            if (addMenuDialog.isVisible())
+                Glide.with(this)
                     .load(saveUri)
-                    .into(ivSelect);
+                    .into(addMenuDialog.ivSelectIamge);
+            else
+                Glide.with(this)
+                        .load(saveUri)
+                        .into(ivSelect);
         }
     }
 
@@ -388,7 +382,7 @@ public class MainActivity extends AppCompatActivity
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
                                 loadMenu();
-                                createRestaurantMenu(menuModel.getResult().get(0).getId(), dialog);
+                                createRestaurantMenu(menuModel.getResult().get(0).getId());
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -403,50 +397,11 @@ public class MainActivity extends AppCompatActivity
 
     ////////////////////////////////////////
     private void showAddMenuDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle(getResources().getString(R.string.txt_title_add_new_menu));
-        alertDialog.setMessage(getResources().getString(R.string.txt_content_add_new_menu));
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.layout_add_menu, null);
-
-        editName = add_menu_layout.findViewById(R.id.edit_name);
-        edtDescription = add_menu_layout.findViewById(R.id.edit_description);
-        ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
-        tvPost = add_menu_layout.findViewById(R.id.tv_post);
-        tvCancel = add_menu_layout.findViewById(R.id.tv_cancel);
-
-        //Event for button
-        ivSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage(); //Let user select image from gallery and save Uri of this image
-            }
-        });
-
-        alertDialog.setView(add_menu_layout);
-        alertDialog.setIcon(R.drawable.ic_add_cart);
-        final AlertDialog dialog = alertDialog.show();
-//        dialog.show();
-//        alertDialog.show();
-
-        tvPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage(dialog);
-            }
-        });
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
+        addMenuDialog.show(getSupportFragmentManager(), "addmenu dialog");
     }
 
 
-    private void uploadImage(AlertDialog dialog) {
+    public void uploadImage(String name, String description) {
         if (saveUri != null) {
             final ProgressDialog mDialog = new ProgressDialog(this);
             mDialog.setMessage("Uploading...");
@@ -465,7 +420,7 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //set value for newCategory if image upload and we can get download link
-                                    createMenu(uri.toString(), dialog);
+                                    createMenu(uri.toString(), name, description);
                                 }
                             });
                         }
@@ -487,10 +442,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void createMenu(String uri, AlertDialog dialog) {
+    private void createMenu(String uri, String name, String description) {
         compositeDisposable.add(anNgonAPI.createMenu(Common.API_KEY,
-                editName.getText().toString(),
-                edtDescription.getText().toString(),
+                name,
+                description,
                 uri)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -498,7 +453,7 @@ public class MainActivity extends AppCompatActivity
                             if (menuModel.isSuccess()) {
                                 categoryList.add(menuModel.getResult().get(0));
                                 menuAdapter.notifyItemInserted(categoryList.size());
-                                createRestaurantMenu(menuModel.getResult().get(0).getId(), dialog);
+                                createRestaurantMenu(menuModel.getResult().get(0).getId());
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -510,7 +465,7 @@ public class MainActivity extends AppCompatActivity
                 ));
     }
 
-    private void createRestaurantMenu(int menuId, AlertDialog dialog) {
+    private void createRestaurantMenu(int menuId) {
         compositeDisposable.add(anNgonAPI.createRestaurantMenu(Common.API_KEY,
                 menuId,
                 Common.currentRestaurantOwner.getRestaurantId())
@@ -518,7 +473,6 @@ public class MainActivity extends AppCompatActivity
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
-                                dialog.dismiss();
                                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                                         .setTitleText(getResources().getString(R.string.txt_title_add_new_menu_success))
                                         .setContentText(getResources().getString(R.string.txt_content_add_new_menu_success))

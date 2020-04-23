@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OrderFood Manager</string>
+    <string name="app_name">OF Manager</string>
     <string name="sologan">Đừng bỏ bữa, bạn nhé!</string>
     <string name="text_login">Login</string>
     <string name="text_signup">Signup</string>

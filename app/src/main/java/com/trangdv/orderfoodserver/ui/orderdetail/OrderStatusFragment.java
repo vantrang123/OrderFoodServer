@@ -20,7 +20,6 @@ import com.trangdv.orderfoodserver.adapter.ShippingOrderAdapter;
 import com.trangdv.orderfoodserver.common.Common;
 import com.trangdv.orderfoodserver.model.FCMSendData;
 import com.trangdv.orderfoodserver.model.Shipper;
-import com.trangdv.orderfoodserver.model.User;
 import com.trangdv.orderfoodserver.remote.IFCMService;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
@@ -43,13 +42,14 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
     DialogUtils dialogUtils;
     IFCMService ifcmService;
 
-    private ImageView ivAcceptOrder, ivFindShipper, ivShipped, ivAcceptShipper, ivCancelled;
+    private ImageView ivAcceptOrder, ivChoiseShipper, ivShipped, ivShipping, ivCancelled;
     private TextView tvShipperName, tvShipperAddress, tvShipperPhone, tvPost, tvCancel;
     private RecyclerView rvShipper;
     private ShippingOrderAdapter shippingOrderAdapter;
     private int statusId = 0;
     private String shipperFBID;
     private LinearLayoutManager layoutManager;
+    private View vLine1Gradient, vLine1, vLine2, vLine3, vLine4, vLine2Gradient, vLine3Gradient, vLine4Gradient;
 
     @Nullable
     @Override
@@ -77,14 +77,24 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
     private void findViewById(View view) {
         ivAcceptOrder = view.findViewById(R.id.iv_accept_order);
         ivAcceptOrder.setOnClickListener(this);
-        ivFindShipper = view.findViewById(R.id.iv_find_shipper);
-        ivFindShipper.setOnClickListener(this);
+        ivChoiseShipper = view.findViewById(R.id.iv_choise_shipper);
+        ivChoiseShipper.setOnClickListener(this);
+        ivChoiseShipper.setClickable(false);
         ivShipped = view.findViewById(R.id.iv_shipped);
         ivShipped.setOnClickListener(this);
         ivCancelled = view.findViewById(R.id.iv_cancelled);
         ivCancelled.setOnClickListener(this);
-        ivAcceptShipper = view.findViewById(R.id.iv_accept_shipper);
-        ivAcceptShipper.setOnClickListener(this);
+        ivShipping = view.findViewById(R.id.iv_shipping);
+        ivShipping.setOnClickListener(this);
+        vLine1 = view.findViewById(R.id.line1);
+        vLine2 = view.findViewById(R.id.line2);
+        vLine3 = view.findViewById(R.id.line3);
+        vLine4 = view.findViewById(R.id.line4);
+
+        vLine1Gradient = view.findViewById(R.id.line1gradient);
+        vLine2Gradient = view.findViewById(R.id.line2gradient);
+        vLine3Gradient = view.findViewById(R.id.line3gradient);
+        vLine4Gradient = view.findViewById(R.id.line4gradient);
 
 //        tvUpdateStatus = view.findViewById(R.id.tv_update_status);
 //        tvUpdateStatus.setOnClickListener(this);
@@ -92,20 +102,31 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
 
     public void initStatus() {
         int id;
-        if (((OrderDetailActivity) getActivity()).status == 2) {
+        if (((OrderDetailActivity) getActivity()).status >= Common.currentOrder.getOrderStatus()) {
             id = ((OrderDetailActivity) getActivity()).status;
         } else {
             id = Common.currentOrder.getOrderStatus();
         }
         updateCorlorStatus(id);
+        statusId = id;
     }
 
     public void updateOrderStatus() {
         dialogUtils.showProgress(getContext());
-        compositeDisposable.add(anNgonAPI.updateOrderStatus(Common.API_KEY,
-                Common.currentOrder.getOrderId(),
-                statusId
-        )
+
+        if (statusId == 1) {
+            setShippingOrder("0", 0, Common.currentOrder.getOrderFBID());
+            updateOrder();
+        } else if (statusId == 3) {
+            setShippingOrder(shipperFBID, 3, Common.currentOrder.getOrderFBID());
+        } else {
+//            updateOrder();
+            dialogUtils.showProgress(getContext());
+        }
+    }
+
+    private void updateOrder() {
+        compositeDisposable.add(anNgonAPI.updateOrderStatus(Common.API_KEY, Common.currentOrder.getOrderId(), statusId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(updateOrderModel -> {
@@ -115,21 +136,15 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                             dialogUtils.dismissProgress();
                         }
                 ));
-        if (statusId == 1) {
-            setShippingOrder("0",0);
-        }
-        if (statusId == 3) {
-            setShippingOrder(shipperFBID,1);
-        }
-
     }
 
-    private void setShippingOrder(String shipperFBID, int status) {
+    private void setShippingOrder(String shipperFBID, int status, String orderFBID) {
         compositeDisposable.add(anNgonAPI.setShippingOrder(Common.API_KEY,
                 Common.currentOrder.getOrderId(),
                 Common.currentOrder.getRestaurantId(),
                 shipperFBID,
-                status)
+                status,
+                orderFBID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shippingOrderModel -> {
@@ -170,7 +185,6 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(fcmResponse -> {
-                                            updateCorlorStatus(statusId);
                                             Common.currentOrder.setOrderStatus(statusId);
                                             ((OrderDetailActivity) getActivity()).sendResult();
                                             dialogUtils.dismissProgress();
@@ -193,18 +207,28 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
             case -1:
                 ivCancelled.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivCancelled.setClickable(false);
-            case 4:
+                break;
+            case 5:
                 ivShipped.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivShipped.setClickable(false);
+                vLine3.setVisibility(View.INVISIBLE);
+                vLine3Gradient.setVisibility(View.VISIBLE);
+            case 4:
+                ivShipping.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
+                ivShipping.setClickable(false);
+                vLine2.setVisibility(View.INVISIBLE);
+                vLine2Gradient.setVisibility(View.VISIBLE);
             case 3:
-                ivAcceptShipper.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
-                ivAcceptShipper.setClickable(false);
+                ivChoiseShipper.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
+                ivChoiseShipper.setClickable(false);
             case 2:
-                ivFindShipper.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
-                ivFindShipper.setClickable(false);
+                vLine1.setVisibility(View.INVISIBLE);
+                vLine1Gradient.setVisibility(View.VISIBLE);
+                ivChoiseShipper.setClickable(true);
             case 1:
                 ivAcceptOrder.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivAcceptOrder.setClickable(false);
+                ivCancelled.setClickable(false);
                 break;
             default:
                 break;
@@ -225,25 +249,26 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_accept_order:
-                statusId = 0;
+                statusId = 1;
 //                ivOrderPlaced.setClickable(true);
                 showConfirmDialog();
                 break;
-            case R.id.iv_find_shipper:
-                statusId = 1;
-//                ivShipping.setClickable(true);
-                showConfirmDialog();
-                break;
-            case R.id.iv_shipped:
-                statusId = 2;
-//                ivShipped.setClickable(true);
-                showConfirmDialog();
-                break;
-            case R.id.iv_accept_shipper:
+            case R.id.iv_choise_shipper:
                 statusId = 3;
+//                ivShipping.setClickable(true);
                 dialogUtils.showProgress(getContext());
                 getShipperRequestShip();
                 break;
+            /*case R.id.iv_shipping:
+                statusId = 4;
+                dialogUtils.showProgress(getContext());
+                getShipperRequestShip();
+                break;
+            case R.id.iv_shipped:
+                statusId = 5;
+//                ivShipped.setClickable(true);
+                showConfirmDialog();
+                break;*/
             case R.id.iv_cancelled:
                 statusId = -1;
 //                ivCancelled.setClickable(true);
@@ -279,6 +304,8 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
             public void onClick(View v) {
                 dialogUtils.showProgress(getContext());
                 getToken(shipperFBID);
+                setShippingOrder(shipperFBID, 3, Common.currentOrder.getOrderFBID());
+                dialog.dismiss();
             }
         });
 
@@ -301,13 +328,14 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                                     if (shipperModel.isSuccess()) {
                                         if (shipperModel.getResult().size() > 0) {
                                             showChoiseShipper(shipperModel.getResult());
+                                            dialogUtils.dismissProgress();
                                         }
                                     } else {
-
+                                        dialogUtils.dismissProgress();
                                     }
                                 },
                                 throwable -> {
-
+                                    dialogUtils.dismissProgress();
                                 })
         );
     }

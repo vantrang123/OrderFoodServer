@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,7 +41,6 @@ import com.trangdv.orderfoodserver.model.eventbus.FoodListEvent;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
-import com.trangdv.orderfoodserver.viewholder.FoodViewHolder;
 
 import net.igenius.customcheckbox.CustomCheckBox;
 
@@ -129,9 +127,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         });
 
         swrFood.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
+                android.R.color.holo_orange_dark);
 
         swrFood.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -161,16 +157,12 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         alertDialog.setMessage(getResources().getString(R.string.txt_content_add_new_menu));
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.layout_add_food, null);
+        View add_menu_layout = inflater.inflate(R.layout.dialog_add_food, null);
 
-        editName = add_menu_layout.findViewById(R.id.edit_name);
-        editDescription = add_menu_layout.findViewById(R.id.edit_description);
+        editName = add_menu_layout.findViewById(R.id.edt_name);
+        editDescription = add_menu_layout.findViewById(R.id.edt_description);
         editPrice = add_menu_layout.findViewById(R.id.edt_price);
         editDiscount = add_menu_layout.findViewById(R.id.edt_discount);
-        ckbNone = add_menu_layout.findViewById(R.id.ckb_none);
-        ckbSmall = add_menu_layout.findViewById(R.id.ckb_small);
-        ckbMedium = add_menu_layout.findViewById(R.id.ckb_medium);
-        ckbLarge = add_menu_layout.findViewById(R.id.ckb_large);
 
         ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
         tvPost = add_menu_layout.findViewById(R.id.tv_post);

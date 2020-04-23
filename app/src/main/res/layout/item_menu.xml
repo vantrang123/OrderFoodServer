@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:layout_margin="10dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    android:foreground="?selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/img_menu_image"
