@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hbb20.CountryCodePicker;
 import com.trangdv.orderfoodserver.R;
+import com.trangdv.orderfoodserver.common.Common;
 
 public class SignupActivity extends AppCompatActivity {
     private EditText edt_username;
@@ -70,38 +71,8 @@ public class SignupActivity extends AppCompatActivity {
         bundle.putString("password", password);
         bundle.putString("phoneFormat", phoneFormat);
         intent.putExtras(bundle);
-//        intent.putExtra("phoneNumber", phoneNumber);
         startActivity(intent);
     }
-
-/*
-    private void createUser() {
-        table_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //check if user not exist in database
-                if (dataSnapshot.child(phonenumber).exists()) {
-                    User user = dataSnapshot.child(phonenumber).getValue(User.class);
-                    Toast.makeText(SignupActivity.this, "Phone number already registered !", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    User user = new User(name, password);
-                    table_user.child(phonenumber).setValue(user);
-                    Toast.makeText(SignupActivity.this, "Sign Up Successfully !", Toast.LENGTH_SHORT).show();
-                    sendResult();
-                    //finish();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-*/
 
     private void getTextfromEdt() {
         phoneNumber = edt_phonenumber.getText().toString();
@@ -118,9 +89,13 @@ public class SignupActivity extends AppCompatActivity {
         bundle.putString(LoginActivity.KEY_PHONENUMBER, phoneNumber);
         bundle.putString(LoginActivity.KEY_PASSWORD, password);
         intent.putExtras(bundle);
-
         setResult(RESULT_OK, intent);
-
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Common.animateFinish(this);
     }
 }

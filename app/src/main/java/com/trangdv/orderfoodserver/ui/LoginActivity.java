@@ -160,9 +160,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void gotoMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-
         startActivity(intent);
-        finish();
+        Common.animateStart(this);
     }
 
     private void setTextintoEdt() {

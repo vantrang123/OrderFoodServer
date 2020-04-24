@@ -215,104 +215,6 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    private void sendOrderStatusToUser(final String key, final Request item) {
-        /*DatabaseReference tokens = database.getReference("Tokens");
-        tokens.child(item.getPhone())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            Token token = dataSnapshot.getValue(Token.class);
-
-                            //make raw payload
-                            Notification notification = new Notification("OrderFood", "Your order " + key + " was updated");
-                            Sender content = new Sender(token.getToken(), notification);
-
-                            mService.sendNotification(content).enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if (response.body().success == 1) {
-                                        Toast.makeText(OrderActivity.this, "Order was updated!", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(OrderActivity.this, "Order was updated but failed to send notification!"
-                                                , Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-                                    Log.e("ERROR", t.getMessage());
-
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
-    }
-
-    private void sendOrderShipRequestToShipper(String shipperPhone, Request item) {
-
-        DatabaseReference tokens = database.getReference("Tokens");
-
-        tokens.child(shipperPhone)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            Token token = dataSnapshot.getValue(Token.class);
-
-                            //make raw payload
-//                            Notification notification = new Notification("OrderFood", "You have new order need ship");
-                            Notification notification = new Notification("OrderFood", getString(R.string.text_notification_order_to_shipper));
-                            Sender content = new Sender(token.getToken(), notification);
-
-//                            mService.sendNotification(content).enqueue(new Callback<FCMResponse>() {
-//                                @Override
-//                                public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-//                                    if (response.body().success == 1) {
-//                                        updateInfo();
-//                                        Toast.makeText(OrderActivity.this, "Sent to Shippers!", Toast.LENGTH_SHORT).show();
-//                                    } else {
-//
-//
-//                                        Toast.makeText(OrderActivity.this, "Failed to send notification!"
-//                                                , Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<FCMResponse> call, Throwable t) {
-//                                    Log.e("ERROR", t.getMessage());
-//
-//                                }
-//                            });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    private void updateInfo() {
-        /*FirebaseDatabase.getInstance().getReference(Common.ORDER_NEED_SHIP_TABLE)
-                .child(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString())
-                .child(globalKey)
-                .setValue(iRequest);
-
-        request.child(globalKey).setValue(iRequest);
-        adpter.notifyDataSetChanged(); //add to update item size
-
-        sendOrderStatusToUser(globalKey, iRequest);*/
-    }
-
     private void initScrollListener() {
         rvListOrder.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -377,4 +279,9 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         startActivityForResult(intent, REQUEST_CODE_ORDER_DETAIL);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Common.animateFinish(this);
+    }
 }

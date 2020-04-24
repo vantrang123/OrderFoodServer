@@ -590,4 +590,10 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
     public void dispatchToEditingFood(int position) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Common.animateFinish(this);
+    }
 }

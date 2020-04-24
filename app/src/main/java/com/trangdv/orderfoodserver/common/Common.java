@@ -1,5 +1,6 @@
 package com.trangdv.orderfoodserver.common;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -126,5 +127,14 @@ public class Common {
 
     public static String getTopicChannel(int restaurantId) {
         return new StringBuilder("Restaurant_").append(restaurantId).toString();
+    }
+
+    public static void animateStart(Context context) {
+        Activity act = (Activity)context;
+        act.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+    public static void animateFinish(Context context) {
+        Activity act = (Activity)context;
+        act.overridePendingTransition(0, R.anim.right_to_left);
     }
 }
