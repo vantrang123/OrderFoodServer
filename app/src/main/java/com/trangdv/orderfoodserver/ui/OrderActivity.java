@@ -117,9 +117,7 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         layoutManager = new LinearLayoutManager(this);
         rvListOrder.setLayoutManager(layoutManager);
         refreshLayout.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
+                android.R.color.holo_orange_dark);
     }
 
     private void loadMaxOrder() {

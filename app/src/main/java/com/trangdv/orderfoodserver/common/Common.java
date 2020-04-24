@@ -53,15 +53,17 @@ public class Common {
     public static String convertCodeToStatus(int code) {
         switch (code) {
             case 0:
-                return "Placed";
+                return "Đã đặt";
             case 1:
                 return "Chấp nhận đơn hàng";
-            case 2:
+            case 5:
                 return "Shipped";
+            case 4:
+                return "Shipping";
             case -1:
                 return "Cancelled";
             default:
-                return "Cancelled";
+                return "";
         }
     }
 

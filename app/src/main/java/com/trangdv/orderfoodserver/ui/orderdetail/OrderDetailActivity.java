@@ -154,4 +154,10 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
                 break;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Common.animateFinish(this);
+    }
 }
