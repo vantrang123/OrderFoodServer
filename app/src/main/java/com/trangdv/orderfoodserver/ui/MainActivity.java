@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,6 +50,7 @@ import com.trangdv.orderfoodserver.model.eventbus.FoodListEvent;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.ui.dialog.AddMenuDialog;
+import com.trangdv.orderfoodserver.ui.dialog.ConfirmLogoutDialog;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 import com.trangdv.orderfoodserver.viewholder.MenuViewHolder;
@@ -488,9 +488,19 @@ public class MainActivity extends AppCompatActivity
                 ));
     }
 
-    public void OrderStatus() {
+    public void Orders() {
         Intent intent = new Intent(MainActivity.this, OrderActivity.class);
         startActivity(intent);
+        Common.animateStart(this);
+    }
+
+    private void confirmLogout() {
+        new ConfirmLogoutDialog().show(getSupportFragmentManager(), "confirmlogutdialog");
+    }
+
+    public void reSelectItem() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 
@@ -533,27 +543,25 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_home:
                 if (item.isChecked()) item.setChecked(false);
                 else {
-//                    Toast.makeText(MainActivity.this, "menu", Toast.LENGTH_SHORT).show();
                 }
                 item.setChecked(true);
-//                transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
                 break;
 
-            case R.id.nav_status:
+            case R.id.nav_order:
                 if (item.isChecked()) item.setChecked(false);
                 else {
-                    OrderStatus();
+                    Orders();
                 }
                 item.setChecked(true);
                 break;
 
             case R.id.nav_exit:
-                SharedPrefs.getInstance().clear();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                if (item.isChecked()) item.setChecked(false);
+                else {
+                    confirmLogout();
+                }
+                item.setChecked(true);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer);
@@ -562,7 +570,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -588,9 +596,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void dispatchToFoodList(int position) {
-        dialogUtils.showProgress(this);
         EventBus.getDefault().postSticky(new FoodListEvent(true, categoryList.get(position)));
         startActivity(new Intent(this, FoodListActivity.class));
+        Common.animateStart(this);
     }
 
     @Override
