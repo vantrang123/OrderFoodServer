@@ -50,7 +50,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
         tvYes = view.findViewById(R.id.tv_post);
         tvNo = view.findViewById(R.id.tv_cancel);
         edtName = view.findViewById(R.id.edt_name);
-        edtDescription = view.findViewById(R.id.edt_description);
+        edtDescription = view.findViewById(R.id.edt_address);
         ivSelectIamge = view.findViewById(R.id.iv_select_image);
 
         tvYes.setOnClickListener(this);

@@ -68,7 +68,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
                         @Override
                         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                            categories.get(i).setBitmapImage(resource);
+                            if (categories.size()!=0 && categories.get(i)!=null) {
+                                categories.get(i).setBitmapImage(resource);
+                            }
                             return false;
                         }
                     })
@@ -123,7 +125,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                         itemListener.dispatchToEditingMenu(position);
                         return false;
                     case R.id.delete_item:
-//                        delContributedReview();
+                        itemListener.deleteMenu(position);
                         return false;
                     default:
                         return false;
@@ -136,5 +138,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public interface ItemListener {
         void dispatchToFoodList(int position);
         void dispatchToEditingMenu(int position);
+        void deleteMenu(int position);
     }
 }

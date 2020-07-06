@@ -3,10 +3,12 @@ package com.trangdv.orderfoodserver.retrofit;
 
 import com.trangdv.orderfoodserver.model.FoodModel;
 import com.trangdv.orderfoodserver.model.MaxOrderModel;
+import com.trangdv.orderfoodserver.model.MenuFoodModel;
 import com.trangdv.orderfoodserver.model.MenuModel;
 import com.trangdv.orderfoodserver.model.OrderDetailModel;
 import com.trangdv.orderfoodserver.model.OrderModel;
 import com.trangdv.orderfoodserver.model.RestaurantMenuModel;
+import com.trangdv.orderfoodserver.model.RestaurantModel;
 import com.trangdv.orderfoodserver.model.RestaurantOwnerModel;
 import com.trangdv.orderfoodserver.model.ShipperModel;
 import com.trangdv.orderfoodserver.model.ShippingOrderModel;
@@ -15,6 +17,7 @@ import com.trangdv.orderfoodserver.model.UpdateOrderModel;
 import com.trangdv.orderfoodserver.model.UpdateRestaurantOwnerModel;
 
 import io.reactivex.Observable;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,7 +29,8 @@ public interface IAnNgonAPI {
 
     @GET("restaurantowner")
     Observable<RestaurantOwnerModel> getRestaurantOwner(@Query("key") String apiKey,
-                                                        @Query("fbid") String fbid);
+                                                        @Query("phoneNumber") String phoneNumber,
+                                                        @Query("password") String password);
 
     @POST("restaurantowner")
     @FormUrlEncoded
@@ -35,6 +39,7 @@ public interface IAnNgonAPI {
                                                                  @Field("userName") String userName,
                                                                  @Field("fbid") String fbid,
                                                                  @Field("password") String password);
+
 
     @GET("orderbyrestaurant")
     Observable<OrderModel> getOrder(@Query("key") String apiKey,
@@ -106,6 +111,18 @@ public interface IAnNgonAPI {
                                      @Field("isAddon") String isAddon,
                                      @Field("discount") int discount);
 
+    @PUT("updatefood")
+    @FormUrlEncoded
+    Observable<FoodModel> updateFood(@Field("key") String apiKey,
+                                     @Field("foodId") String fooId,
+                                     @Field("name") String name,
+                                     @Field("description") String description,
+                                     @Field("image") String image,
+                                     @Field("price") float price,
+                                     @Field("isSize") String isSize,
+                                     @Field("isAddon") String isAddon,
+                                     @Field("discount") int discount);
+
     @POST("menufood")
     @FormUrlEncoded
     Observable<RestaurantMenuModel> createMenuFood(@Field("key") String apiKey,
@@ -125,8 +142,8 @@ public interface IAnNgonAPI {
 
     @GET("shippingorder")
     Observable<ShippingOrderModel> getShippingOrder(@Query("key") String apiKey,
-                                                   @Query("restaurantId") int restaurantId,
-                                                   @Query("orderId") int orderId);
+                                                    @Query("restaurantId") int restaurantId,
+                                                    @Query("orderId") int orderId);
 
     @POST("shippingorder")
     @FormUrlEncoded
@@ -146,4 +163,24 @@ public interface IAnNgonAPI {
                                              @Query("fbid") String fbid,
                                              @Query("foodId") int foodId,
                                              @Query("restaurantId") int restaurantId);*/
+
+    @DELETE("deleterestaurantmenu")
+    Observable<RestaurantMenuModel> deleteRestaurantMenu(@Query("key") String apiKey,
+                                                         @Query("MenuId") int menuId);
+
+    @DELETE("deletemenu")
+    Observable<MenuModel> deleteMenu(@Query("key") String apiKey,
+                                     @Query("MenuId") int menuId);
+
+    @DELETE("deletemenufood")
+    Observable<MenuFoodModel> deleteMenuFood(@Query("key") String apiKey,
+                                             @Query("MenuId") int menuId);
+
+    @DELETE("deletefood")
+    Observable<FoodModel> deleteFood(@Query("key") String apiKey,
+                                     @Query("foodId") int foodId);
+
+    @DELETE("deletefoodmenu")
+    Observable<MenuFoodModel> deleteFoodMenu(@Query("key") String apiKey,
+                                             @Query("foodId") int foodId);
 }

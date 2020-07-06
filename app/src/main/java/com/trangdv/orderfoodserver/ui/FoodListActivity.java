@@ -2,7 +2,6 @@ package com.trangdv.orderfoodserver.ui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,8 +24,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -41,8 +38,6 @@ import com.trangdv.orderfoodserver.model.eventbus.FoodListEvent;
 import com.trangdv.orderfoodserver.retrofit.IAnNgonAPI;
 import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
-
-import net.igenius.customcheckbox.CustomCheckBox;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +65,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
     //Firebase
     FirebaseDatabase db;
-    DatabaseReference foodList;
     FirebaseStorage storage;
     StorageReference storageReference;
 
@@ -78,7 +72,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
     //Add new food
     private EditText editName, editDescription, editPrice, editDiscount;
-    private CustomCheckBox ckbNone, ckbSmall, ckbMedium, ckbLarge;
     private TextView tvCancel, tvPost, tvTitle;
     private ImageView ivSelect, ivBack;
     private String isSize;
@@ -96,7 +89,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
         //Firebase
         db = FirebaseDatabase.getInstance();
-        foodList = db.getReference("Foods");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -150,6 +142,63 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         rvListFood.setAdapter(foodListAdapter);
     }
 
+    //showUpdateFoodDialog() method
+    private void showUpdateFoodDialog(Food food, int i) {
+
+        //just copy code from showAddFoodDialog() method
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
+        alertDialog.setTitle("Chỉnh sửa thông tin món");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View edit_menu_layout = inflater.inflate(R.layout.dialog_add_food, null);
+
+        editName = edit_menu_layout.findViewById(R.id.edt_name);
+        editDescription = edit_menu_layout.findViewById(R.id.edt_address);
+        editPrice = edit_menu_layout.findViewById(R.id.edt_price);
+        editDiscount = edit_menu_layout.findViewById(R.id.edt_discount);
+        ivSelect = edit_menu_layout.findViewById(R.id.iv_select_image);
+        tvPost = edit_menu_layout.findViewById(R.id.tv_post);
+        tvCancel = edit_menu_layout.findViewById(R.id.tv_cancel);
+
+        //Set default value for View
+        editName.setText(food.getName());
+        editDescription.setText(food.getDescription());
+        editPrice.setText(food.getPrice().toString());
+        editDiscount.setText(String.valueOf(food.getDiscount()));
+
+        Glide.with(this)
+                .asBitmap()
+                .load(food.getImage())
+                .centerCrop()
+                .fitCenter()
+                .placeholder(R.drawable.image_default)
+                .into(ivSelect);
+        alertDialog.setView(edit_menu_layout);
+        AlertDialog dialog = alertDialog.show();
+
+        //Event for button
+        ivSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+
+        tvPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeImage(food, dialog, i);
+            }
+        });
+
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
     //showAddFoodDialog() method
     private void showAddFoodDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
@@ -160,7 +209,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         View add_menu_layout = inflater.inflate(R.layout.dialog_add_food, null);
 
         editName = add_menu_layout.findViewById(R.id.edt_name);
-        editDescription = add_menu_layout.findViewById(R.id.edt_description);
+        editDescription = add_menu_layout.findViewById(R.id.edt_address);
         editPrice = add_menu_layout.findViewById(R.id.edt_price);
         editDiscount = add_menu_layout.findViewById(R.id.edt_discount);
 
@@ -170,7 +219,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
         alertDialog.setView(add_menu_layout);
         alertDialog.setIcon(R.drawable.ic_add_cart);
-        final AlertDialog dialog = alertDialog.show();
+        AlertDialog dialog = alertDialog.show();
 
         //Event for button
         ivSelect.setOnClickListener(new View.OnClickListener() {
@@ -191,35 +240,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-            }
-        });
-
-        ckbNone.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                if (isChecked) {
-                }
-            }
-        });
-        ckbSmall.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                if (isChecked) {
-                }
-            }
-        });
-        ckbMedium.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                if (isChecked) {
-                }
-            }
-        });
-        ckbLarge.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                if (isChecked) {
-                }
             }
         });
     }
@@ -269,13 +289,12 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                             mDialog.setMessage("Uploaded: " + progress + "%");
                         }
                     });
+        } else {
+            createFood("", dialog);
         }
     }
 
     private void createFood(String uri, AlertDialog dialog) {
-        if (ckbNone.isChecked())
-            isSize = "false";
-        else isSize = "true";
         compositeDisposable.add(anNgonAPI.createFood(Common.API_KEY,
                 editName.getText().toString(),
                 editDescription.getText().toString(),
@@ -289,8 +308,7 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(foodModel -> {
                             if (foodModel.isSuccess()) {
-                                if (!ckbNone.isChecked())
-                                    createFoodSize(foodModel);
+                                createFoodSize(foodModel);
                                 createMenuFood(foodModel, dialog);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
@@ -305,12 +323,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
     private void createFoodSize(FoodModel foodModel) {
         int foodId = foodModel.getResult().get(0).getId();
-        if (ckbSmall.isChecked())
-            createFoodSize(foodId, 1);
-        if (ckbMedium.isChecked())
-            createFoodSize(foodId, 2);
-        if (ckbLarge.isChecked())
-            createFoodSize(foodId, 3);
     }
 
     private void createFoodSize(int foodId, int sizeId) {
@@ -321,7 +333,6 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
-                                //Todo
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -393,8 +404,14 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
             saveUri = data.getData();
             Glide.with(this)
+                    .asBitmap()
                     .load(saveUri)
+                    .centerCrop()
+                    .fitCenter()
+                    .placeholder(R.drawable.image_default)
                     .into(ivSelect);
+            tvPost.setEnabled(true);
+            tvPost.setBackground(getResources().getDrawable(R.drawable.bg_button));
         }
     }
 
@@ -417,79 +434,12 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
     //deleteFood() method
     private void deleteFood(String key) {
-        foodList.child(key).removeValue();
-    }
 
-    //showUpdateFoodDialog() method
-    private void showUpdateFoodDialog(final String key, final Food item) {
-
-        //just copy code from showAddFoodDialog() method
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListActivity.this);
-        alertDialog.setTitle("Edit Food Food");
-        alertDialog.setMessage("Please fill full information");
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.add_new_food_layout, null);
-
-        editName = add_menu_layout.findViewById(R.id.edit_name_anf);
-        editDescription = add_menu_layout.findViewById(R.id.edit_description_anf);
-        editPrice = add_menu_layout.findViewById(R.id.edit_price_anf);
-        editDiscount = add_menu_layout.findViewById(R.id.edit_discount_anf);
-
-        //Set default value for View
-        editName.setText(item.getName());
-        editDescription.setText(item.getDescription());
-
-        editDiscount.setText(item.getDiscount());
-
-        ivSelect = add_menu_layout.findViewById(R.id.btn_select_anf);
-        tvPost = add_menu_layout.findViewById(R.id.btn_upload_anf);
-
-        //Event for button
-        ivSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-            }
-        });
-
-        tvPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeImage(item);
-            }
-        });
-
-        alertDialog.setView(add_menu_layout);
-        alertDialog.setIcon(R.drawable.ic_add_cart);
-
-        //setButton
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-                //Update information
-
-
-                Snackbar.make(rootLayout, "Category " + item.getName() + " edited Successfully", Snackbar.LENGTH_SHORT).show();
-
-            }
-        });
-
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
     }
 
 
     //changeImage() method
-    private void changeImage(final Food item) {
+    private void changeImage(Food food, AlertDialog dialog, int position) {
         if (saveUri != null) {
             final ProgressDialog mDialog = new ProgressDialog(this);
             mDialog.setMessage("Uploading...");
@@ -503,12 +453,14 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(FoodListActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(FoodListActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //set value for newCategory if image upload and we can get download link
-                                    item.setImage(uri.toString());
+                                    food.setImage(uri.toString());
+                                    foodListAdapter.notifyItemChanged(position);
+                                    updateFood(uri, dialog, String.valueOf(food.getId()));
                                 }
                             });
                         }
@@ -530,6 +482,36 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
         }
     }
 
+    private void updateFood(Uri uri, AlertDialog dialog, String foodId) {
+        compositeDisposable.add(anNgonAPI.updateFood(Common.API_KEY,
+                foodId,
+                editName.getText().toString(),
+                editDescription.getText().toString(),
+                uri.toString(),
+                Float.valueOf(editPrice.getText().toString()),
+                "",
+                "",
+                Integer.valueOf(editDiscount.getText().toString()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(menuModel -> {
+                            if (menuModel.isSuccess()) {
+                                dialog.dismiss();
+                                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Chỉnh sửa thành công")
+                                        .setContentText("Bạn hãy thêm món ăn mới để dể thu hút nhiều người mua hơn")
+                                        .show();
+                            } else {
+                                Toast.makeText(this, "[UPDATE FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+//                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+    }
+
     private void fetchData(int menuId) {
         foods.clear();
         compositeDisposable.add(anNgonAPI.getFoodOfMenu(Common.API_KEY, menuId)
@@ -539,13 +521,14 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
                             if (foodModel.isSuccess()) {
                                 foods.addAll(foodModel.getResult());
                                 foodListAdapter.notifyDataSetChanged();
-                                swrFood.setRefreshing(false);
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
+                            swrFood.setRefreshing(false);
 
                         },
                         throwable -> {
+                            swrFood.setRefreshing(false);
                             Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                 ));
@@ -588,6 +571,50 @@ public class FoodListActivity extends AppCompatActivity implements FoodListAdapt
 
     @Override
     public void dispatchToEditingFood(int position) {
+        showUpdateFoodDialog(foods.get(position), position);
+    }
+
+    @Override
+    public void deleteFood(int position) {
+        compositeDisposable.add(anNgonAPI.deleteFoodMenu(Common.API_KEY,
+                foods.get(position).getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(menuFoodModel -> {
+                            if (menuFoodModel.isSuccess()) {
+                                compositeDisposable.add(anNgonAPI.deleteFood(Common.API_KEY,
+                                        foods.get(position).getId())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(foodModel -> {
+                                                    if (foodModel.isSuccess()) {
+                                                        foods.remove(position);
+                                                        foodListAdapter.notifyItemRemoved(position);
+                                                        new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                                                                .setTitleText("Xóa món")
+                                                                .setContentText("Đã xóa menu thành công!")
+                                                                .show();
+                                                    } else {
+                                                        Toast.makeText(this, "[DELETE FOOD]" + foodModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                },
+                                                throwable -> {
+                                                    dialogUtils.dismissProgress();
+                                                    Toast.makeText(this, "[DELETE FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                        ));
+                            } else {
+                                dialogUtils.dismissProgress();
+                                Toast.makeText(this, "[DELETE FOOD]" + menuFoodModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            dialogUtils.dismissProgress();
+                            Toast.makeText(this, "[DELETE FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
 
     }
 

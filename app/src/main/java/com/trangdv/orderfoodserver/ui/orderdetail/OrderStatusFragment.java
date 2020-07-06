@@ -1,6 +1,7 @@
 package com.trangdv.orderfoodserver.ui.orderdetail;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,12 +114,15 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
 
     public void updateOrderStatus() {
         dialogUtils.showProgress(getContext());
-
+        if (statusId == -1) {
+            updateOrder();
+        }
         if (statusId == 1) {
             setShippingOrder("0", 0, Common.currentOrder.getOrderFBID());
             updateOrder();
         } else if (statusId == 3) {
             setShippingOrder(shipperFBID, 3, Common.currentOrder.getOrderFBID());
+//            updateOrder();
         } else {
 //            updateOrder();
             dialogUtils.showProgress(getContext());
@@ -131,6 +135,9 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(updateOrderModel -> {
                             getToken(Common.currentOrder.getOrderFBID());
+                            if (statusId == -1) {
+                                updateCorlorStatus(statusId);
+                            }
                         }
                         , throwable -> {
                             dialogUtils.dismissProgress();
@@ -174,10 +181,10 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                 .subscribe(tokenModel -> {
                             if (tokenModel.isSuccess()) {
                                 Map<String, String> messageSend = new HashMap<>();
-                                messageSend.put(Common.NOTIFI_TITLE, "Your order has been updated");
-                                messageSend.put(Common.NOTIFI_CONTENT, new StringBuilder("Your order ")
+                                messageSend.put(Common.NOTIFI_TITLE, "Trạng thái đơn hàng mới");
+                                messageSend.put(Common.NOTIFI_CONTENT, new StringBuilder("Đơn hàng ")
                                         .append(Common.currentOrder.getOrderId())
-                                        .append(" has been update to")
+                                        .append(" đã ")
                                         .append(Common.convertCodeToStatus(statusId)).toString());
 
                                 FCMSendData fcmSendData = new FCMSendData(tokenModel.getResult().get(0).getToken(), messageSend);
@@ -188,6 +195,7 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                                             Common.currentOrder.setOrderStatus(statusId);
                                             ((OrderDetailActivity) getActivity()).sendResult();
                                             dialogUtils.dismissProgress();
+                                            updateOrderNonNotify();
                                             Toast.makeText(getContext(), "[UPDATE SUCCESS]", Toast.LENGTH_SHORT).show();
                                         }, throwable -> {
                                             Toast.makeText(getContext(), "[UPDATE FAILED]", Toast.LENGTH_SHORT).show();
@@ -202,11 +210,23 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                 ));
     }
 
+    private void updateOrderNonNotify() {
+        compositeDisposable.add(anNgonAPI.updateOrderStatus(Common.API_KEY, Common.currentOrder.getOrderId(), statusId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(updateOrderModel -> {
+                        }
+                        , throwable -> {
+                        }
+                ));
+    }
+
     private void updateCorlorStatus(int id) {
         switch (id) {
             case -1:
                 ivCancelled.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivCancelled.setClickable(false);
+                ivAcceptOrder.setClickable(false);
                 break;
             case 5:
                 ivShipped.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
@@ -303,6 +323,7 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 dialogUtils.showProgress(getContext());
+                statusId = 3;
                 getToken(shipperFBID);
                 setShippingOrder(shipperFBID, 3, Common.currentOrder.getOrderFBID());
                 dialog.dismiss();

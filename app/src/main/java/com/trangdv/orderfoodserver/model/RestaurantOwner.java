@@ -1,7 +1,7 @@
 package com.trangdv.orderfoodserver.model;
 
 public class RestaurantOwner {
-    private String userPhone, name, fbid;
+    private String userPhone, name, fbid, password;
     private int restaurantId;
     private boolean status;
 
@@ -46,5 +46,13 @@ public class RestaurantOwner {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

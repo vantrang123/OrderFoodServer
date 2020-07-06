@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <EditText
-        android:id="@+id/edt_description"
+        android:id="@+id/edt_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Mô tả"
@@ -50,19 +50,19 @@
         android:textSize="13sp"
         android:inputType="number"
         android:layout_marginHorizontal="@dimen/dimens_10dp"
-        app:layout_constraintLeft_toLeftOf="@id/edt_description"
-        app:layout_constraintTop_toBottomOf="@id/edt_description"
+        app:layout_constraintLeft_toLeftOf="@id/edt_address"
+        app:layout_constraintTop_toBottomOf="@id/edt_address"
         />
 
     <EditText
         android:id="@+id/edt_discount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Giảm giá"
+        android:hint="Phí giao hàng"
         android:textSize="13sp"
         android:inputType="number"
         android:layout_marginHorizontal="@dimen/dimens_10dp"
-        app:layout_constraintLeft_toLeftOf="@id/edt_description"
+        app:layout_constraintLeft_toLeftOf="@id/edt_address"
         app:layout_constraintTop_toBottomOf="@id/edt_price"
         />
 

@@ -24,6 +24,7 @@ import com.trangdv.orderfoodserver.retrofit.RetrofitClient;
 import com.trangdv.orderfoodserver.utils.DialogUtils;
 import com.trangdv.orderfoodserver.utils.SharedPrefs;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.paperdb.Paper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -106,7 +107,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getTextfromEdt();
 
-                if (phonenumber.equals("") == false && password.equals("") == false) {
+                if (phonenumber.equals("") == true || password.equals("") == true) {
+                    new SweetAlertDialog(LoginActivity.this)
+                            .setContentText("Bạn cần nhập số điện thoại và mật khẩu để đăng nhập!")
+                            .setTitleText("Opps..")
+                            .show();
+                } else {
                     authLogin();
                 }
 
@@ -122,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
     private void authLogin() {
         dialogUtils.showProgress(this);
         compositeDisposable.add(
-                anNgonAPI.getRestaurantOwner(Common.API_KEY, "k1o2DavRpsY959Mdwwt4ZSFDx7C3")
+                anNgonAPI.getRestaurantOwner(Common.API_KEY, phonenumber, password)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(restaurantOwnerModel -> {
@@ -134,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                         //save user in share pref
                                         SharedPrefs.getInstance().put(SAVE_RESTAURANT_OWNER, Common.currentRestaurantOwner);
-
+                                        finish();
                                         gotoMainActivity();
 
                                     } else {

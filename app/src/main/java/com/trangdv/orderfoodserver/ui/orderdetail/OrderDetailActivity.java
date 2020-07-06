@@ -71,11 +71,11 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
     }
 
     private void initView() {
-        Date date = Common.currentOrder.getOrderDate();
-        String day          = (String) DateFormat.format("dd",   date); // 20
-        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
+        String date = Common.currentOrder.getOrderDate();
+//        String day          = (String) DateFormat.format("dd",   date); // 20
+//        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
 
-        tvOrderOn.setText(new StringBuilder(day).append(" ").append(monthString));
+        tvOrderOn.setText(date);
         tvOrderNumber.setText(new StringBuffer("#").append(String.valueOf(Common.currentOrder.getOrderId())));
         tvPrice.setText(new StringBuilder(String.valueOf(Common.currentOrder.getTotalPrice())).append("đ"));
     }

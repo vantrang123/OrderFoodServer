@@ -80,9 +80,9 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
 //        int price = (Integer.parseInt(foods.get(position).getPrice()));
         double price = foods.get(position).getPrice();
 
-        holder.tvNameFood.setText("Name: " + foods.get(position).getName());
-        holder.tvPriceFood.setText("Price: " + fmt.format(price));
-        holder.tvDiscountFood.setText("Discount: " + foods.get(position).getDiscount());
+        holder.tvNameFood.setText("Tên: " + foods.get(position).getName());
+        holder.tvPriceFood.setText("Giá: " + fmt.format(price));
+        holder.tvDiscountFood.setText("Phí giao hàng: " + foods.get(position).getDiscount());
 
         if (foods.get(position).getBitmapImage() == null) {
             Glide.with(context)
@@ -190,6 +190,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
                         return false;
                     case R.id.delete_item:
 //                        delContributedReview();
+                        listener.deleteFood(position);
                         return false;
                     default:
                         return false;
@@ -255,5 +256,6 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
     public interface ItemListener {
         void dispatchToFoodDetail(int position);
         void dispatchToEditingFood(int position);
+        void deleteFood(int position);
     }
 }

@@ -30,7 +30,8 @@ import com.trangdv.orderfoodserver.remote.RetrofitClient;
 
 public class Common {
     public static final String API_KEY = "1234";
-    public static final String API_ANNGON_ENDPOINT = "http://192.168.137.1:3000";
+//    public static final String API_ANNGON_ENDPOINT = "http://192.168.43.205:3000";
+    public static final String API_ANNGON_ENDPOINT = "http://192.168.1.7:3000";
     public static final String REMENBER_FBID = "REMENBER_FBID";
     public static final String API_KEY_TAG = "API_KEY";
     public static final String NOTIFI_TITLE = "title";
@@ -57,11 +58,15 @@ public class Common {
             case 1:
                 return "Chấp nhận đơn hàng";
             case 5:
-                return "Shipped";
+                return "Đã giao";
             case 4:
-                return "Shipping";
+                return "Đang giao";
+            case 3:
+                return "Chấp nhận giao hàng";
+            case 2:
+                return "Yêu cầu giao hàng";
             case -1:
-                return "Cancelled";
+                return "Bị hủy";
             default:
                 return "";
         }
@@ -113,6 +118,7 @@ public class Common {
 
         builder.setContentTitle(title)
                 .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.app_icon));

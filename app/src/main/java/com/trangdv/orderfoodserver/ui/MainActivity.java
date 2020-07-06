@@ -209,13 +209,28 @@ public class MainActivity extends AppCompatActivity
         swrMenu.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadMenu();
+                if (Common.currentRestaurantOwner.getRestaurantId()==0) {
+                    new SweetAlertDialog(MainActivity.this)
+                            .setContentText("Tài khoản của bạn chưa được xác thực, vui lòng liên lạc *** để được hướng dẫn!")
+                            .setTitleText("Opps..")
+                            .show();
+                } else {
+                    loadMenu();
+                }
+                swrMenu.setRefreshing(false);
             }
         });
         swrMenu.post(new Runnable() {
             @Override
             public void run() {
-                loadMenu();
+                if (Common.currentRestaurantOwner.getRestaurantId()==0) {
+                    new SweetAlertDialog(MainActivity.this)
+                            .setContentText("Tài khoản của bạn chưa được xác thực, vui lòng liên lạc *** để được hướng dẫn!")
+                            .setTitleText("Opps..")
+                            .show();
+                } else {
+                    loadMenu();
+                }
             }
         });
 
@@ -259,14 +274,14 @@ public class MainActivity extends AppCompatActivity
         //Just copy & past showDialog() and modify
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle("Cập nhật Menu");
-        alertDialog.setMessage("Please fill full information");
 
         LayoutInflater inflater = this.getLayoutInflater();
         View add_menu_layout = inflater.inflate(R.layout.layout_update_menu, null);
 
         editName = add_menu_layout.findViewById(R.id.edt_name);
-        edtDescription = add_menu_layout.findViewById(R.id.edt_description);
+        edtDescription = add_menu_layout.findViewById(R.id.edt_address);
         tvPost = add_menu_layout.findViewById(R.id.tv_post);
+        tvPost.setEnabled(false);
         tvCancel = add_menu_layout.findViewById(R.id.tv_cancel);
         ivSelect = add_menu_layout.findViewById(R.id.iv_select_image);
 
@@ -274,7 +289,11 @@ public class MainActivity extends AppCompatActivity
         editName.setText(item.getName());
         edtDescription.setText(item.getDescription());
         Glide.with(this)
+                .asBitmap()
                 .load(item.getImage())
+                .centerCrop()
+                .fitCenter()
+                .placeholder(R.drawable.image_default)
                 .into(ivSelect);
 
         //Event for button
@@ -309,6 +328,7 @@ public class MainActivity extends AppCompatActivity
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), Common.PIC_IMAGE_REQUEST);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -318,12 +338,23 @@ public class MainActivity extends AppCompatActivity
 
             if (addMenuDialog.isVisible())
                 Glide.with(this)
-                    .load(saveUri)
-                    .into(addMenuDialog.ivSelectIamge);
-            else
-                Glide.with(this)
+                        .asBitmap()
                         .load(saveUri)
+                        .centerCrop()
+                        .fitCenter()
+                        .placeholder(R.drawable.image_default)
+                        .into(addMenuDialog.ivSelectIamge);
+            else {
+                Glide.with(this)
+                        .asBitmap()
+                        .load(saveUri)
+                        .centerCrop()
+                        .fitCenter()
+                        .placeholder(R.drawable.image_default)
                         .into(ivSelect);
+                tvPost.setEnabled(true);
+                tvPost.setBackground(getResources().getDrawable(R.drawable.bg_button));
+            }
         }
     }
 
@@ -342,7 +373,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Upload Successfully!!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -382,14 +413,19 @@ public class MainActivity extends AppCompatActivity
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
                                 loadMenu();
-                                createRestaurantMenu(menuModel.getResult().get(0).getId());
+                                dialog.dismiss();
+//                                createRestaurantMenu(menuModel.getResult().get(0).getId());
+                                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText(getResources().getString(R.string.txt_title_add_new_menu_success))
+                                        .setContentText(getResources().getString(R.string.txt_content_add_new_menu_success))
+                                        .show();
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
                         },
                         throwable -> {
-                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(this, "[GET FOOD]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                 ));
     }
@@ -401,15 +437,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void uploadImage(String name, String description) {
+    public void uploadImage(String name, String description, int key) {
         if (saveUri != null) {
-            final ProgressDialog mDialog = new ProgressDialog(this);
+            ProgressDialog mDialog = new ProgressDialog(this);
             mDialog.setMessage("Uploading...");
             mDialog.show();
 
             //create random string
             String imageName = UUID.randomUUID().toString();
-            final StorageReference imageFolder = storageReference.child("image/" + imageName);
+            StorageReference imageFolder = storageReference.child("image/" + imageName);
             imageFolder.putFile(saveUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -452,7 +488,7 @@ public class MainActivity extends AppCompatActivity
                 .subscribe(menuModel -> {
                             if (menuModel.isSuccess()) {
                                 categoryList.add(menuModel.getResult().get(0));
-                                menuAdapter.notifyItemInserted(categoryList.size());
+                                menuAdapter.notifyItemInserted(categoryList.size()-1);
                                 createRestaurantMenu(menuModel.getResult().get(0).getId());
                             } else {
                                 Toast.makeText(this, "[GET FOOD RESULT]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
@@ -604,5 +640,66 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void dispatchToEditingMenu(int position) {
         showUpdateDialog(categoryList.get(position), position);
+    }
+
+    @Override
+    public void deleteMenu(int position) {
+        compositeDisposable.add(anNgonAPI.deleteRestaurantMenu(Common.API_KEY,
+                categoryList.get(position).getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurantMenuModel -> {
+                            if (restaurantMenuModel.isSuccess()) {
+                                compositeDisposable.add(anNgonAPI.deleteMenu(Common.API_KEY,
+                                        categoryList.get(position).getId())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(menuModel -> {
+                                                    if (menuModel.isSuccess()) {
+                                                        deleteMenuFood(position);
+                                                    } else {
+                                                        Toast.makeText(this, "[DELETE RESTAURANT_MENU]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                },
+                                                throwable -> {
+//                                                    Toast.makeText(this, "[DELETE RESTAURANT_MENU]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    deleteMenuFood(position);
+                                                }
+                                        ));
+                            } else {
+                                Toast.makeText(this, "[DELETE MENU]" + restaurantMenuModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[DELETE MENU]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
+
+    }
+
+    private void deleteMenuFood(int position) {
+        compositeDisposable.add(anNgonAPI.deleteMenuFood(Common.API_KEY,
+                categoryList.get(position).getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(menuModel -> {
+                            if (menuModel.isSuccess()) {
+                                categoryList.remove(position);
+                                menuAdapter.notifyItemRemoved(position);
+                                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Xóa menu")
+                                        .setContentText("Đã xóa menu thành công!")
+                                        .show();
+                            } else {
+                                Toast.makeText(this, "[DELETE RESTAURANT_MENU]" + menuModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        },
+                        throwable -> {
+                            Toast.makeText(this, "[DELETE RESTAURANT_MENU]" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                ));
     }
 }

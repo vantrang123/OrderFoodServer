@@ -10,24 +10,37 @@
         android:background="@drawable/bg_dialog"
         android:layout_marginHorizontal="@dimen/dimens_10dp">
 
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạo nhà hàng"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dimens_10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:hint="Tên menu"
+            android:hint="Tên"
             android:inputType="text"
             android:textSize="13sp"
+            android:layout_marginTop="@dimen/dimen_16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:hint="Mô tả"
+            android:hint="Địa chỉ"
             android:inputType="text"
             android:textSize="13sp"
             android:layout_marginTop="@dimen/dimen_16dp"
@@ -38,9 +51,8 @@
         <ImageView
             android:id="@+id/iv_select_image"
             android:layout_width="wrap_content"
-            android:layout_height="240dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="60dp"
             android:src="@drawable/image_select"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -59,7 +71,6 @@
             android:textColor="@color/colorWhite"
             app:layout_constraintLeft_toLeftOf="@id/edt_name"
             app:layout_constraintRight_toLeftOf="@id/tv_post"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_select_image"
             android:foreground="?selectableItemBackgroundBorderless"/>
 

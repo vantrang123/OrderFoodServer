@@ -22,13 +22,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.trangdv.orderfoodserver.R;
 import com.trangdv.orderfoodserver.ui.MainActivity;
 
-public class AddMenuDialog extends DialogFragment implements View.OnClickListener {
+public class CreateRestaurantDialog extends DialogFragment implements View.OnClickListener {
     String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
     private TextView tvYes, tvNo;
     private TextInputEditText edtName, edtDescription;
     public ImageView ivSelectIamge;
-    private String name, descriptiom;
+    private String name, address;
 
     @Nullable
     @Override
@@ -40,7 +40,7 @@ public class AddMenuDialog extends DialogFragment implements View.OnClickListene
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             this.getDialog().setCanceledOnTouchOutside(true);
         }
-        View view = inflater.inflate(R.layout.dialog_add_menu, container, false);
+        View view = inflater.inflate(R.layout.dialog_create_restaurant, container, false);
         findViewById(view);
 
         // event
@@ -108,7 +108,7 @@ public class AddMenuDialog extends DialogFragment implements View.OnClickListene
 //                    Toast.makeText(getContext(), "Vui lòng điền đủ thông tin!", Toast.LENGTH_SHORT).show();
                     tvYes.setClickable(false);
                 }
-                descriptiom = edtDescription.getText().toString();
+                address = edtDescription.getText().toString();
             }
         });
     }
@@ -117,7 +117,7 @@ public class AddMenuDialog extends DialogFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_post:
-                ((MainActivity)getActivity()).uploadImage(name, descriptiom, 0);
+                ((MainActivity)getActivity()).uploadImage(name, address, 1);
                 dismiss();
                 break;
             case R.id.tv_cancel:

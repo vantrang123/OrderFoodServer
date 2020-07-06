@@ -167,7 +167,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                         if (updateRestaurantOwnerModel.isSuccess()) {
                                             // save curreentUser
                                             compositeDisposable.add(
-                                                    anNgonAPI.getRestaurantOwner(Common.API_KEY, firebaseUser.getUid())
+                                                    anNgonAPI.getRestaurantOwner(Common.API_KEY, phoneNumber, password)
                                                             .subscribeOn(Schedulers.io())
                                                             .observeOn(AndroidSchedulers.mainThread())
                                                             .subscribe(restaurantOwnerModel -> {
